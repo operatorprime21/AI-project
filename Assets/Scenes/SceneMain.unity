@@ -334,6 +334,8 @@ MonoBehaviour:
   end: {fileID: 0}
   floorObj: {fileID: 2927438713162109215, guid: a0db2a7338e307e4692cef3fbeb48b14, type: 3}
   floorGrid: []
+  openList: []
+  pathWay: []
 --- !u!4 &955097792
 Transform:
   m_ObjectHideFlags: 0
@@ -368,7 +370,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!136 &1642170146
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -484,7 +486,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!136 &1883034537
 CapsuleCollider:
   m_ObjectHideFlags: 0
