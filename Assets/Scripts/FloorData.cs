@@ -29,11 +29,14 @@ public class FloorData : MonoBehaviour
 
     IEnumerator Scan()
     {
-        
         yield return new WaitForSeconds(1f);
-        if (listed == looking.close)
+        if (listed == looking.open)
         {
             this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
+        }
+        if (listed == looking.close)
+        {
+            this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
         }
         StartCoroutine(Scan());
     }
@@ -56,5 +59,40 @@ public class FloorData : MonoBehaviour
                 this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
                 break;
         }
+    }
+
+    public List<GameObject> GetSurroundingFloor()
+    {
+        float newX = x;
+        float newY = y;
+        int c = 0;
+        List<GameObject> nextFloors = new List<GameObject>();
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                if (x != 0 || y != 0)
+                {
+                    float lookingX = newX + x;
+                    float lookingY = newY + y;
+                    GameObject floor = GameObject.Find(lookingX.ToString() + ", " + lookingY.ToString());                 
+                    if (floor != null)
+                    {
+                        //Debug.Log(floor);
+                        FloorData nextData = floor.GetComponent<FloorData>();
+                        if (nextData.listed == FloorData.looking.none)
+                        {
+                            if (nextData.Type != FloorData.type.notWalkable)
+                            {
+                                nextFloors.Add(floor);
+                                c++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return nextFloors;
     }
 }

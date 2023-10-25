@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
+
 
 public class FloorManager : MonoBehaviour
 {
     public FloorData start;
     public FloorData end;
+    public FloorData nextPathNode;
 
     public GameObject floorObj;
     public List<GameObject> floorGrid = new List<GameObject>();
 
     public List<GameObject> openList = new List<GameObject>();
     public List<GameObject> pathWay = new List<GameObject>();
+
+
 
     void Start()
     {
@@ -24,17 +27,15 @@ public class FloorManager : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
         GetStartEnd();
-        LookFrom(start);
+        nextPathNode = start;
+        yield return new WaitForSeconds(.1f);
+        StartCoroutine(LookFrom());
     }
 
     // Update is called once per frame
     void Update()
     {
-        //if(restart)
-        //{
-        //    StartCoroutine(Scan());
-
-        //}
+        
     }
 
     public void SpawnFloors()
@@ -70,57 +71,38 @@ public class FloorManager : MonoBehaviour
         }
     }
 
-    public void LookFrom(FloorData floorFrom)
+    IEnumerator LookFrom()
     {
-        float newX = floorFrom.x;
-        float newY = floorFrom.y;
-        int c = 0;
-        for (int x = -1; x <= 1; x++)
+        bool looking = true;
+        yield return new WaitForSeconds(0.2f);
+        foreach(GameObject floors in nextPathNode.GetSurroundingFloor())
         {
-            for(int y = -1; y<=1; y++)
+            if(floors.GetComponent<FloorData>().listed == FloorData.looking.none)
             {
-                if (x != 0 || y != 0)
-                {
-                    float lookingX = newX + x;
-                    float lookingY = newY + y;
-                    GameObject floor = GameObject.Find(lookingX.ToString() + ", " + lookingY.ToString());
-                    Debug.Log(floor);
-                    if (floor != null)
-                    {
-                        FloorData nextData = floor.GetComponent<FloorData>();
-                        if (nextData.x == newX + x && nextData.y == newY + y)
-                        {
-                            if (nextData.listed == FloorData.looking.none)
-                            {
-                                if (floor.GetComponent<FloorData>().Type == FloorData.type.walkable)
-                                {
-                                    openList.Add(floor);
-                                    nextData.listed = FloorData.looking.open;
-                                    c++;
-                                }
-                            }
-                        }
-                    }
-
-                }
+                openList.Add(floors);
+                floors.GetComponent<FloorData>().listed = FloorData.looking.open;
             }
+            if (floors.GetComponent<FloorData>().Type == FloorData.type.end)
+            {
+                looking = false;
+                Debug.Log("REACHED!");
+            }
+
         }
-        if (c > 0)
+        if(looking)
         {
-            floorFrom.listed = FloorData.looking.close;
-            pathWay.Add(floorFrom.gameObject);
+            GetNextFloor();
         }
-        else
-        {
-            floorFrom.listed = FloorData.looking.ignore;
-        }
-        GetNextFloor();
     }
 
     public float FValueCalc(FloorData floorFrom)
     {
-        float gValue = Mathf.Sqrt(floorFrom.x * floorFrom.x + start.x * start.x);
-        float hValue = Mathf.Sqrt(floorFrom.x * floorFrom.x + end.x * end.x); ;
+        float gX = Mathf.Abs(start.x - floorFrom.x);
+        float gY = Mathf.Abs(start.y - floorFrom.y);
+        float hX = Mathf.Abs(end.x - floorFrom.x);
+        float hY = Mathf.Abs(end.y - floorFrom.y);
+        float gValue = Mathf.Sqrt(gX * gX + gY * gY);
+        float hValue = Mathf.Sqrt(hX * hX + hY * hY); 
         return gValue + hValue;
     }
 
@@ -137,9 +119,30 @@ public class FloorManager : MonoBehaviour
                 curF.Add(data.fValue);
             }
         }
-        float fToGet = curF.Min();
+        GetMinFValue(curF);
+    }
 
-        GetMinF(fToGet);
+    private void GetMinFValue(List<float> curF)
+    {
+        for (int i = 0; i <= curF.Count; i++)
+        {
+            if (curF.Count > 1)
+            {
+                if (curF[i] < curF[i + 1])
+                {
+                    curF.RemoveAt(i + 1);
+                    i--;
+                }
+                else
+                {
+                    curF.RemoveAt(i);
+                    i--;
+                }
+            }
+        } 
+        Debug.Log(curF[0]);
+
+        GetMinF(curF[0]);
     }
 
     private void GetMinF(float fToGet)
@@ -149,9 +152,12 @@ public class FloorManager : MonoBehaviour
             FloorData data = openFloor.GetComponent<FloorData>();
             if (data.fValue == fToGet)
             {
-                LookFrom(data);
+                nextPathNode = data;
+                data.listed = FloorData.looking.close;
+                openList.Remove(data.gameObject);
                 break;
-            }
+            }  
         }
+        StartCoroutine(LookFrom());
     }
 }
