@@ -40,9 +40,9 @@ public class FloorManager : MonoBehaviour
 
     public void SpawnFloors()
     {
-        for(int x = -5; x<6; x++)
+        for(int x = -10; x<11; x++)
         {
-            for (int y = -5; y<6;y++)
+            for (int y = -10; y<11;y++)
             {
                 GameObject floor = Instantiate(floorObj, new Vector3(x, 0, y), Quaternion.identity);
                 floorGrid.Add(floor);
@@ -140,8 +140,6 @@ public class FloorManager : MonoBehaviour
                 }
             }
         } 
-        Debug.Log(curF[0]);
-
         GetMinF(curF[0]);
     }
 
