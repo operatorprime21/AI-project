@@ -74,7 +74,7 @@ public class FloorManager : MonoBehaviour
     IEnumerator LookFrom()
     {
         bool looking = true;
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.01f);
         foreach(GameObject floors in nextPathNode.GetSurroundingFloor())
         {
             if(floors.GetComponent<FloorData>().listed == FloorData.looking.none)
