@@ -11,7 +11,10 @@ public class FloorData : MonoBehaviour
 
     public float x;
     public float y;
-    public float fValue;
+    public float f;
+    public float g;
+    public float h;
+    public FloorData parent;
 
     private void Start()
     {

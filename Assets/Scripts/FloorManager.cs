@@ -9,11 +9,13 @@ public class FloorManager : MonoBehaviour
     public FloorData end;
     public FloorData nextPathNode;
 
+    public FloorData nextConnected;
+
     public GameObject floorObj;
     public List<GameObject> floorGrid = new List<GameObject>();
 
     public List<GameObject> openList = new List<GameObject>();
-    public List<GameObject> pathWay = new List<GameObject>();
+    public List<FloorData> pathWay = new List<FloorData>();
 
 
 
@@ -28,6 +30,9 @@ public class FloorManager : MonoBehaviour
         yield return new WaitForSeconds(3f);
         GetStartEnd();
         nextPathNode = start;
+        nextPathNode.g = 0;
+        pathWay.Add(start);
+        nextConnected = start;
         yield return new WaitForSeconds(.1f);
         StartCoroutine(LookFrom());
     }
@@ -74,11 +79,12 @@ public class FloorManager : MonoBehaviour
     IEnumerator LookFrom()
     {
         bool looking = true;
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(0.2f);
         foreach(GameObject floors in nextPathNode.GetSurroundingFloor())
         {
             if(floors.GetComponent<FloorData>().listed == FloorData.looking.none)
             {
+                floors.GetComponent<FloorData>().parent = nextPathNode;
                 openList.Add(floors);
                 floors.GetComponent<FloorData>().listed = FloorData.looking.open;
             }
@@ -97,13 +103,18 @@ public class FloorManager : MonoBehaviour
 
     public float FValueCalc(FloorData floorFrom)
     {
-        float gX = Mathf.Abs(start.x - floorFrom.x);
-        float gY = Mathf.Abs(start.y - floorFrom.y);
+        float gXFromParent = Mathf.Abs(floorFrom.parent.x - floorFrom.x);
+        float gYFromParent = Mathf.Abs(floorFrom.parent.y - floorFrom.y);
+        float gFromParent = Mathf.Sqrt(gXFromParent * gXFromParent + gYFromParent * gYFromParent);
+        
         float hX = Mathf.Abs(end.x - floorFrom.x);
         float hY = Mathf.Abs(end.y - floorFrom.y);
-        float gValue = Mathf.Sqrt(gX * gX + gY * gY);
-        float hValue = Mathf.Sqrt(hX * hX + hY * hY); 
-        return gValue + hValue;
+        float hValue = Mathf.Sqrt(hX * hX + hY * hY);
+
+        floorFrom.g = gFromParent + floorFrom.parent.g;
+        
+        floorFrom.h = hValue;
+        return floorFrom.g + floorFrom.h;
     }
 
     public void GetNextFloor()
@@ -113,10 +124,10 @@ public class FloorManager : MonoBehaviour
         {
             FloorData floorData = openFloor.GetComponent<FloorData>();
             FloorData data = floorData;
-            data.fValue = FValueCalc(data);
+            data.f = FValueCalc(data);
             if (data.listed != FloorData.looking.ignore)
             {
-                curF.Add(data.fValue);
+                curF.Add(data.f);
             }
         }
         GetMinFValue(curF);
@@ -148,13 +159,17 @@ public class FloorManager : MonoBehaviour
         foreach (GameObject openFloor in openList)
         {
             FloorData data = openFloor.GetComponent<FloorData>();
-            if (data.fValue == fToGet)
+            if (data.f == fToGet)
             {
                 nextPathNode = data;
                 data.listed = FloorData.looking.close;
                 openList.Remove(data.gameObject);
+                if(nextConnected.GetSurroundingFloor().Contains(data.gameObject))
+                {
+                    
+                }
                 break;
-            }  
+            }
         }
         StartCoroutine(LookFrom());
     }
