@@ -11,9 +11,11 @@ public class FloorData : MonoBehaviour
 
     public float x;
     public float y;
-    public float f;
     public float g;
     public float h;
+    public float f;
+
+    public Transform pos;
     public FloorData parent;
 
     private void Start()
@@ -32,7 +34,7 @@ public class FloorData : MonoBehaviour
 
     IEnumerator Scan()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.2f);
         if (listed == looking.open)
         {
             this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
@@ -97,5 +99,18 @@ public class FloorData : MonoBehaviour
         }
 
         return nextFloors;
+    }
+
+    public void GetParent()
+    {
+        if(parent!=null)
+        {
+            StopAllCoroutines();
+            FloorManager manager = GameObject.Find("Manager").GetComponent<FloorManager>();
+            manager.pathWay.Add(parent);
+            parent.GetParent();
+            this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+        }
+        
     }
 }

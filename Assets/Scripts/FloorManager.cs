@@ -12,12 +12,11 @@ public class FloorManager : MonoBehaviour
     public FloorData nextConnected;
 
     public GameObject floorObj;
+
     public List<GameObject> floorGrid = new List<GameObject>();
 
     public List<GameObject> openList = new List<GameObject>();
     public List<FloorData> pathWay = new List<FloorData>();
-
-
 
     void Start()
     {
@@ -34,7 +33,7 @@ public class FloorManager : MonoBehaviour
         pathWay.Add(start);
         nextConnected = start;
         yield return new WaitForSeconds(.1f);
-        StartCoroutine(LookFrom());
+        LookFrom();
     }
 
     // Update is called once per frame
@@ -76,10 +75,10 @@ public class FloorManager : MonoBehaviour
         }
     }
 
-    IEnumerator LookFrom()
+    void LookFrom()
     {
         bool looking = true;
-        yield return new WaitForSeconds(0.2f);
+        //yield return new WaitForSeconds(0.2f);
         foreach(GameObject floors in nextPathNode.GetSurroundingFloor())
         {
             if(floors.GetComponent<FloorData>().listed == FloorData.looking.none)
@@ -92,6 +91,7 @@ public class FloorManager : MonoBehaviour
             {
                 looking = false;
                 Debug.Log("REACHED!");
+                floors.GetComponent<FloorData>().GetParent();
             }
 
         }
@@ -171,6 +171,6 @@ public class FloorManager : MonoBehaviour
                 break;
             }
         }
-        StartCoroutine(LookFrom());
+        LookFrom();
     }
 }
