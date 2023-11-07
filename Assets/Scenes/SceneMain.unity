@@ -311,6 +311,7 @@ GameObject:
   m_Component:
   - component: {fileID: 955097792}
   - component: {fileID: 955097791}
+  - component: {fileID: 955097793}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -332,10 +333,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   start: {fileID: 0}
   end: {fileID: 0}
+  nextPathNode: {fileID: 0}
   floorObj: {fileID: 2927438713162109215, guid: a0db2a7338e307e4692cef3fbeb48b14, type: 3}
+  wallObj: {fileID: 4003422611957153070, guid: 57e4ec17d1a7c984aa5d8fbcf3d8a21d, type: 3}
   floorGrid: []
-  openList: []
-  pathWay: []
+  xSize: 15
+  ySize: 15
 --- !u!4 &955097792
 Transform:
   m_ObjectHideFlags: 0
@@ -351,6 +354,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &955097793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955097790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abd8036536b953244817e8c5c443ec09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startX: 0
+  startY: 0
+  lengthX: 0
+  lengthY: 0
 --- !u!1 &1642170145
 GameObject:
   m_ObjectHideFlags: 0
@@ -480,13 +499,14 @@ GameObject:
   - component: {fileID: 1883034538}
   - component: {fileID: 1883034537}
   - component: {fileID: 1883034541}
+  - component: {fileID: 1883034542}
   m_Layer: 0
   m_Name: AI Hunter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!136 &1883034537
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -583,3 +603,26 @@ MonoBehaviour:
   wallsMask:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &1883034542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883034536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0abfa222cd84ce14998a3ddf2d110ec7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  curTile: {fileID: 0}
+  nextTile: {fileID: 0}
+  canMove: 0
+  revIndex: 0
+  startTime: 0
+  moveSpeed: 1
+  start: {fileID: 0}
+  end: {fileID: 0}
+  nextPathNode: {fileID: 0}
+  openList: []
+  pathWay: []
