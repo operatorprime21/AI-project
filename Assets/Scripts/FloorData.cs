@@ -20,7 +20,7 @@ public class FloorData : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(Scan());
+        //StartCoroutine(Scan());
         StartCoroutine(InitColor());
         this.gameObject.name = this.transform.position.x.ToString() + ", " + this.transform.position.z.ToString();
         x = this.transform.position.x;
@@ -57,21 +57,15 @@ public class FloorData : MonoBehaviour
             case type.end:
                 this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
                 break;
-            case type.walkable:
-                this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
-                break;
-            case type.notWalkable:
-                this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
-                break;
         }
     }
 
-    public List<GameObject> GetSurroundingFloor()
+    public List<FloorData> GetSurroundingFloor()
     {
         float newX = x;
         float newY = y;
         int c = 0;
-        List<GameObject> nextFloors = new List<GameObject>();
+        List<FloorData> nextFloors = new List<FloorData>();
         for (int x = -1; x <= 1; x++)
         {
             for (int y = -1; y <= 1; y++)
@@ -89,7 +83,7 @@ public class FloorData : MonoBehaviour
                         {
                             if (nextData.Type != FloorData.type.notWalkable)
                             {
-                                nextFloors.Add(floor);
+                                nextFloors.Add(floor.GetComponent<FloorData>());
                                 c++;
                             }
                         }
@@ -106,11 +100,18 @@ public class FloorData : MonoBehaviour
         if(parent!=null)
         {
             StopAllCoroutines();
-            FloorManager manager = GameObject.Find("Manager").GetComponent<FloorManager>();
-            manager.pathWay.Add(parent);
+            Movement owner = GameObject.Find("AI Hunter").GetComponent<Movement>();
+            owner.pathWay.Add(parent);
             parent.GetParent();
             this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
         }
         
+    }
+
+    public void ResetData()
+    {
+        Type = type.walkable;
+        listed = looking.none;
+        parent = null;
     }
 }
