@@ -89,6 +89,7 @@ public class FloorData : MonoBehaviour
             Movement owner = GameObject.Find("AI Hunter").GetComponent<Movement>();
             owner.pathWay.Add(parent);
             parent.GetParent();
+            this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
         }
         
     }

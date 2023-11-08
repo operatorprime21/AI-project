@@ -620,9 +620,10 @@ MonoBehaviour:
   canMove: 0
   revIndex: 0
   startTime: 0
-  moveSpeed: 1
+  moveSpeed: 5
   start: {fileID: 0}
   end: {fileID: 0}
   nextPathNode: {fileID: 0}
   openList: []
   pathWay: []
+  walkable: []
