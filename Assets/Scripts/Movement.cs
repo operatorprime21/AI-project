@@ -17,13 +17,37 @@ public class Movement : MonoBehaviour
 
     public List<FloorData> openList = new List<FloorData>();
     public List<FloorData> pathWay = new List<FloorData>();
+    public List<FloorData> walkable = new List<FloorData>();
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(Begin());
+        FloorManager manager = GameObject.Find("Manager").GetComponent<FloorManager>();
+
+        foreach (FloorData data in manager.floorGrid)
+        {
+            if (data.Type == FloorData.type.walkable)
+            {
+                walkable.Add(data);
+            }
+        }
+        GetStart();
+        StartCoroutine(startInit());
     }
 
-    // Update is called once per frame
+    IEnumerator startInit()
+    {
+        yield return new WaitForSeconds(1f);
+        GetEnd();
+    }
+    private void GetStart()
+    {
+        int r = Random.Range(0, walkable.Count - 1);
+        start = walkable[r];
+        nextPathNode = start;
+        nextPathNode.listed = FloorData.looking.ignore;
+        walkable.Remove(start);
+
+    }    // Update is called once per frame
     void Update()
     {
         float movingTime =+ (Time.time - startTime) * moveSpeed;
