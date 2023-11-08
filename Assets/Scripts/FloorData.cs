@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FloorData : MonoBehaviour
 {
-    public enum type { walkable, notWalkable, start, end};
+    public enum type { walkable, notWalkable};
     public type Type;
     public enum looking { none, open, close, ignore };
     public looking listed;
@@ -21,7 +21,6 @@ public class FloorData : MonoBehaviour
     private void Start()
     {
         //StartCoroutine(Scan());
-        StartCoroutine(InitColor());
         this.gameObject.name = this.transform.position.x.ToString() + ", " + this.transform.position.z.ToString();
         x = this.transform.position.x;
         y = this.transform.position.z;
@@ -46,19 +45,6 @@ public class FloorData : MonoBehaviour
         StartCoroutine(Scan());
     }
 
-    IEnumerator InitColor()
-    {
-        yield return new WaitForSeconds(0.5f);
-        switch (Type)
-        {
-            case type.start:
-                this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.green);
-                break;
-            case type.end:
-                this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
-                break;
-        }
-    }
 
     public List<FloorData> GetSurroundingFloor()
     {
@@ -103,7 +89,6 @@ public class FloorData : MonoBehaviour
             Movement owner = GameObject.Find("AI Hunter").GetComponent<Movement>();
             owner.pathWay.Add(parent);
             parent.GetParent();
-            this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
         }
         
     }
@@ -112,6 +97,9 @@ public class FloorData : MonoBehaviour
     {
         Type = type.walkable;
         listed = looking.none;
+        g = 0;
+        h = 0;
+        f = 0;
         parent = null;
     }
 }
