@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7536070422386426024}
   - component: {fileID: 2826649698800612607}
   - component: {fileID: 407648023922376490}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -112,7 +112,7 @@ GameObject:
   - component: {fileID: 5733902805098981803}
   m_Layer: 0
   m_Name: WallTile
-  m_TagString: Untagged
+  m_TagString: Grid
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

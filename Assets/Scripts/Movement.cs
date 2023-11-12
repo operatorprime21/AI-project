@@ -7,7 +7,7 @@ public class Movement : MonoBehaviour
     public FloorData curTile;
     public FloorData nextTile;
     public bool canMove = false;
-    public int revIndex = 0;
+    private int revIndex = 0;
     public float startTime = 0f;
     public float moveSpeed;
 
@@ -16,10 +16,15 @@ public class Movement : MonoBehaviour
     public FloorData nextPathNode;
 
     public List<FloorData> openList = new List<FloorData>();
+    public List<FloorData> closeList = new List<FloorData>();
     public List<FloorData> pathWay = new List<FloorData>();
     public List<FloorData> walkable = new List<FloorData>();
     // Start is called before the first frame update
     void Start()
+    {
+        startInit();
+    }
+    void startInit()
     {
         FloorManager manager = GameObject.Find("Manager").GetComponent<FloorManager>();
 
@@ -30,26 +35,7 @@ public class Movement : MonoBehaviour
                 walkable.Add(data);
             }
         }
-        GetStart();
-        StartCoroutine(startInit());
     }
-    
-    IEnumerator startInit()
-    {
-        yield return new WaitForSeconds(1f);
-        GetEnd();
-    }
-    private void GetStart()
-    {
-        int r = Random.Range(0, walkable.Count - 1);
-        start = walkable[r];
-        nextPathNode = start;
-        nextPathNode.listed = FloorData.looking.ignore;
-        walkable.Remove(start);
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
         float movingTime =+ (Time.time - startTime) * moveSpeed;
@@ -62,22 +48,15 @@ public class Movement : MonoBehaviour
                 ChangeTile();
             }
         }
-
-        if (this.transform.position == end.pos.position)
-        {
-            revIndex = 0;
-            RestartNewPath();
-        }
     }
-    
     public void ChangeTile()
     {
         revIndex++;
-        if(pathWay.Count - revIndex  <= 1)
+        if(pathWay.Count - revIndex == 0)
         {
-            curTile = pathWay[0];
+            curTile = pathWay[1];
             nextTile = end;
-            
+            revIndex = 0;
         }
         else
         {
@@ -85,18 +64,7 @@ public class Movement : MonoBehaviour
             nextTile = pathWay[pathWay.Count - revIndex - 1];
         }    
     }
-
-
-    private void GetEnd()
-    {
-        //yield return new WaitForSeconds(1f);
-        int r = Random.Range(0, walkable.Count - 1);
-        end = walkable[r];
-        
-        curTile = start;
-        LookFrom();
-    }
-    void LookFrom()
+    public void LookFrom()
     {
         bool looking = true;
         foreach (FloorData floors in nextPathNode.GetSurroundingFloor())
@@ -109,12 +77,12 @@ public class Movement : MonoBehaviour
             }
             if (floors == end)
             {
+                pathWay.Add(floors);
                 looking = false;
-                floors.GetParent();
+                floors.GetParent(this);
                 curTile = pathWay[pathWay.Count - 1];
                 nextTile = pathWay[pathWay.Count - 2];
                 canMove = true;
-                
                 EmptyData();
             }
 
@@ -180,7 +148,9 @@ public class Movement : MonoBehaviour
             {
                 nextPathNode = data;
                 data.listed = FloorData.looking.close;
+                closeList.Add(data);
                 openList.Remove(data);
+                
                 break;
             }
         }
@@ -193,21 +163,11 @@ public class Movement : MonoBehaviour
             data.ResetData();
         }
         openList = new List<FloorData>();
-        //pathWay = new List<FloorData>();
-    }
-    public void RestartNewPath()
-    {
-        foreach(FloorData data in pathWay)
+        foreach (FloorData data in closeList)
         {
-            data.parent = null;
+            data.ResetData();
         }
-        pathWay = new List<FloorData>();
-        walkable.Add(start);
-
-        start = end;
-        nextPathNode = start;
-        nextPathNode.listed = FloorData.looking.ignore;
-        walkable.Remove(start);
-        GetEnd();
+        closeList = new List<FloorData>();
     }
+
 }

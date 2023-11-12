@@ -31,20 +31,6 @@ public class FloorData : MonoBehaviour
 
     }
 
-    IEnumerator Scan()
-    {
-        yield return new WaitForSeconds(.2f);
-        if (listed == looking.open)
-        {
-            this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
-        }
-        if (listed == looking.close)
-        {
-            this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.cyan);
-        }
-        StartCoroutine(Scan());
-    }
-
 
     public List<FloorData> GetSurroundingFloor()
     {
@@ -81,15 +67,13 @@ public class FloorData : MonoBehaviour
         return nextFloors;
     }
 
-    public void GetParent()
+    public void GetParent(Movement owner)
     {
         if(parent!=null)
         {
             StopAllCoroutines();
-            Movement owner = GameObject.Find("AI Hunter").GetComponent<Movement>();
             owner.pathWay.Add(parent);
-            parent.GetParent();
-            this.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+            parent.GetParent(owner);
         }
         
     }

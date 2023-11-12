@@ -12,6 +12,7 @@ public class FloorManager : MonoBehaviour
     public GameObject floorObj;
     public GameObject wallObj;
 
+    public GameObject map;
     public List<FloorData> floorGrid = new List<FloorData>();
 
     public int xSize;
@@ -21,9 +22,10 @@ public class FloorManager : MonoBehaviour
 
     void Start()
     {
-        SpawnFloors();
+        //SpawnFloors();
+        GetFloors();
     }
-
+    
 
     public void SpawnFloors()
     {
@@ -45,5 +47,11 @@ public class FloorManager : MonoBehaviour
         }
     }
 
-
+    public void GetFloors()
+    {
+        foreach(GameObject grid in GameObject.FindGameObjectsWithTag("Grid"))
+        {
+            floorGrid.Add(grid.GetComponent<FloorData>());
+        }
+    }
 }

@@ -337,8 +337,8 @@ MonoBehaviour:
   floorObj: {fileID: 2927438713162109215, guid: a0db2a7338e307e4692cef3fbeb48b14, type: 3}
   wallObj: {fileID: 4003422611957153070, guid: 57e4ec17d1a7c984aa5d8fbcf3d8a21d, type: 3}
   floorGrid: []
-  xSize: 15
-  ySize: 15
+  xSize: 20
+  ySize: 20
 --- !u!4 &955097792
 Transform:
   m_ObjectHideFlags: 0
@@ -617,13 +617,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   curTile: {fileID: 0}
   nextTile: {fileID: 0}
-  canMove: 0
-  revIndex: 0
-  startTime: 0
   moveSpeed: 5
   start: {fileID: 0}
   end: {fileID: 0}
   nextPathNode: {fileID: 0}
   openList: []
+  closeList: []
   pathWay: []
   walkable: []
