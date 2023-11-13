@@ -61,7 +61,7 @@ public class StateMachineChaser : MonoBehaviour
             data.parent = null;
         }
         moveScript.pathWay = new List<FloorData>();
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(1f);
         moveScript.walkable.Add(moveScript.start);
         moveScript.start.listed = FloorData.looking.none;
         moveScript.start = moveScript.end;

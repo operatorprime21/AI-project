@@ -85,7 +85,6 @@ public class Movement : MonoBehaviour
                 canMove = true;
                 EmptyData();
             }
-
         }
         if (looking)
         {
