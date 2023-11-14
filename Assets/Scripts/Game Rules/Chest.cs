@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spawner : MonoBehaviour
+public class Chest : MonoBehaviour
 {
-    public GameObject hunter;
-    public GameObject lurker;
+    public FloorData floor;
+    public GameObject item;
     void Start()
     {
         

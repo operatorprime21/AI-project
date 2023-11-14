@@ -33,7 +33,7 @@ public class FloorManager : MonoBehaviour
         {
             for (int y = 0; y < (ySize + 1); y++)
             {
-                if (x == 0 || x == xSize || y == 0 || y == ySize)
+                if (x == 0 || x == xSize || y == 0 || y == ySize || x == 8 || x == 12 || y == 8 || y == 12)
                 {
                     GameObject wall = Instantiate(wallObj, new Vector3(x, 0, y), Quaternion.identity);
                     floorGrid.Add(wall.GetComponent<FloorData>());
