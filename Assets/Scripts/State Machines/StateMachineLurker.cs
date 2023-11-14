@@ -27,10 +27,25 @@ public class StateMachineLurker : StateMachineBase
             if (this.transform.position == moveScript.end.pos.position && doingSomething == false)
             {
                 moveScript.startTime = Time.time;
-                doingSomething = true;
                 moveScript.canMove = false;
-                StartCoroutine(RestartNewPath());
-                
+                if (this.transform.position == manager.GetDoorstep().pos.position && manager.door.GetComponent<Door>().unlocking == false)
+                {
+                    moveScript.enabled = false;
+                    if(keys.Count == 0)
+                    {
+                        this.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        manager.door.GetComponent<Door>().UseKey(keys[0]);
+                        keys.RemoveAt(0);
+                    }
+                }
+                else
+                {
+                    StartCoroutine(RestartNewPath());
+                    doingSomething = true;
+                }
             }
         }
     }
@@ -56,7 +71,7 @@ public class StateMachineLurker : StateMachineBase
         
     }
 
-    void DoThing()
+    void SearchChest()
     {
         if(atChest.item != null)
         {
@@ -75,7 +90,7 @@ public class StateMachineLurker : StateMachineBase
         moveScript.pathWay = new List<FloorData>();
         yield return new WaitForSeconds(3f);
 
-        DoThing();
+        SearchChest();
         moveScript.walkable.Add(moveScript.start);
         moveScript.start.listed = FloorData.looking.none;
         moveScript.start = moveScript.end;
@@ -97,10 +112,6 @@ public class StateMachineLurker : StateMachineBase
         {
             moveScript.end = manager.GetDoorstep();
             moveScript.LookFrom();
-        }
-        if(moveScript.start = manager.GetDoorstep())
-        {
-            manager.door.GetComponent<Door>().UseKey(keys[0]);
         }
 
     }

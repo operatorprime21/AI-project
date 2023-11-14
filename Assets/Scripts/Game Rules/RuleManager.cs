@@ -31,7 +31,6 @@ public class RuleManager : MonoBehaviour
         foreach (GameObject chest in GameObject.FindGameObjectsWithTag("Chest"))
         {
             chests.Add(chest);
-            
         }
         return chests;
     }
@@ -63,9 +62,9 @@ public class RuleManager : MonoBehaviour
             {
                 GameObject chest3 = chests[r];
                 chest3.GetComponent<Chest>().item = keyB;
-                chests = FindChests();
             }
         }
+        chests = FindChests();
     }
 
     public FloorData GetDoorstep()

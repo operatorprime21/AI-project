@@ -8,6 +8,7 @@ public class Door : MonoBehaviour
     public List<GameObject> keys = new List<GameObject>();
     public FloorData doorData;
     public FloorData step;
+    public bool unlocking = false;
     public GameObject doorMesh;
     public GameObject lockR;
     public GameObject lockG;
@@ -20,9 +21,16 @@ public class Door : MonoBehaviour
     }
     public void UseKey(GameObject playerkey)
     {
+        StartCoroutine(UseKeyTime(playerkey));
+    }
+
+    private IEnumerator UseKeyTime(GameObject playerkey)
+    {
+        unlocking = true;
+        yield return new WaitForSeconds(1.5f);
         keys.Add(playerkey);
 
-        if(playerkey == manager.keyR)
+        if (playerkey == manager.keyR)
         {
             lockR.SetActive(false);
         }
@@ -35,12 +43,12 @@ public class Door : MonoBehaviour
             lockB.SetActive(false);
         }
 
-
         if (IsDoorUnlocked() == true)
         {
             doorData.Type = FloorData.type.walkable;
             doorMesh.SetActive(false);
         }
+        unlocking = false;
     }
 
     private bool IsDoorUnlocked()
