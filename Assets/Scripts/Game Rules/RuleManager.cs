@@ -18,6 +18,10 @@ public class RuleManager : MonoBehaviour
     void Start()
     {
         FindChests();
+        foreach (GameObject chest in GameObject.FindGameObjectsWithTag("Chest"))
+        {
+            chestPosition.Add(chest.GetComponent<Chest>().floor);
+        }
         RandomizeItem();
     }
 
@@ -27,7 +31,7 @@ public class RuleManager : MonoBehaviour
         foreach (GameObject chest in GameObject.FindGameObjectsWithTag("Chest"))
         {
             chests.Add(chest);
-            chestPosition.Add(chest.GetComponent<Chest>().floor);
+            
         }
         return chests;
     }
@@ -64,8 +68,9 @@ public class RuleManager : MonoBehaviour
         }
     }
 
-    void SpawnLurker()
+    public FloorData GetDoorstep()
     {
-
+        FloorData step = door.GetComponent<Door>().step;
+        return step;
     }
 }

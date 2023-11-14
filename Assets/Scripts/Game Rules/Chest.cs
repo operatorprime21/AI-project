@@ -16,4 +16,12 @@ public class Chest : MonoBehaviour
     {
         
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Player")
+        {
+            other.GetComponent<StateMachineLurker>().atChest = this;
+        }
+    }
 }
