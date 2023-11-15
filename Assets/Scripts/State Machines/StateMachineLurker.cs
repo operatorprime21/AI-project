@@ -4,18 +4,17 @@ using UnityEngine;
 
 public class StateMachineLurker : StateMachineBase
 {
-    RuleManager manager;
+    
     private bool doingSomething = false;
     public Chest atChest;
     public List<GameObject> keys = new List<GameObject>();
     public List<string> objectives = new List<string>();
-    public FloorData spawnPoint;
     public enum State { searching, hiding, running}
     public State state;
     void Start()
     {
-        manager = GameObject.Find("Game Manager").GetComponent<RuleManager>();
-        Spawn();
+        base.StartingPosition();
+        
         FindRandomChest();
     }
 
@@ -24,10 +23,8 @@ public class StateMachineLurker : StateMachineBase
     {
         if(state == State.searching)
         {
-            if (this.transform.position == moveScript.end.pos.position && doingSomething == false)
+            if (base.ReachedEnd() == true && doingSomething == false)
             {
-                moveScript.startTime = Time.time;
-                moveScript.canMove = false;
                 if (this.transform.position == manager.GetDoorstep().pos.position && manager.door.GetComponent<Door>().unlocking == false)
                 {
                     moveScript.enabled = false;
@@ -49,14 +46,7 @@ public class StateMachineLurker : StateMachineBase
             }
         }
     }
-    void Spawn()
-    {
-        int r = Random.Range(0, moveScript.walkable.Count - 1);
-        moveScript.start = moveScript.walkable[r];
-        moveScript.nextPathNode = moveScript.start;
-        moveScript.nextPathNode.listed = FloorData.looking.ignore;
-        moveScript.walkable.Remove(moveScript.start);
-    }
+    
     void FindRandomChest()
     {
         if(manager.chestPosition.Count>0)
@@ -83,28 +73,12 @@ public class StateMachineLurker : StateMachineBase
 
     public IEnumerator RestartNewPath()
     {
-        foreach (FloorData data in moveScript.pathWay)
-        {
-            data.parent = null;
-        }
-        moveScript.pathWay = new List<FloorData>();
+        base.ResetPath();
+
         yield return new WaitForSeconds(3f);
-
-        SearchChest();
-        moveScript.walkable.Add(moveScript.start);
-        moveScript.start.listed = FloorData.looking.none;
-        moveScript.start = moveScript.end;
-
-        moveScript.nextPathNode = moveScript.start;
-        moveScript.nextPathNode.listed = FloorData.looking.ignore;
-        moveScript.walkable.Remove(moveScript.start);
-        moveScript.curTile = moveScript.start;
-
-        yield return new WaitForSeconds(0f);
-        moveScript.canMove = true;
         doingSomething = false;
-
-        if(objectives[0] == "find key")
+        SearchChest();
+        if (objectives[0] == "find key")
         {
             FindRandomChest();
         }
@@ -116,5 +90,16 @@ public class StateMachineLurker : StateMachineBase
 
     }
 
-
+    public override void StepEvent()
+    {
+        switch (state)
+        {
+            case State.searching: 
+                break;
+            case State.hiding:
+                break;
+            case State.running:
+                break;
+        }
+    }
 }

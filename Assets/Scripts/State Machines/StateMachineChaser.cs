@@ -12,37 +12,26 @@ public class StateMachineChaser : StateMachineBase
     public LayerMask wallsMask;
     void Start()
     {
-        Spawn();
+        base.StartingPosition();
         RandomPatrolEnd();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (this.transform.position == moveScript.end.pos.position && moveScript.canMove == true)
+        if (base.ReachedEnd() == true)
         {
-            moveScript.startTime = Time.time;
             StartCoroutine(RestartNewPath());
-            moveScript.canMove = false;
         }
 
         if (DetectTarget() == true)
         {
             state = State.chase;
         }
-        else
-        {
-            state = State.patrol;
-        }
-    }
-
-    void Spawn()
-    {
-        int r = Random.Range(0, moveScript.walkable.Count - 1);
-        moveScript.start = moveScript.walkable[r];
-        moveScript.nextPathNode = moveScript.start;
-        moveScript.nextPathNode.listed = FloorData.looking.ignore;
-        moveScript.walkable.Remove(moveScript.start); 
+        //else
+        //{
+        //    state = State.patrol;
+        //}
     }
 
     public void RandomPatrolEnd()
@@ -54,32 +43,13 @@ public class StateMachineChaser : StateMachineBase
 
     public IEnumerator RestartNewPath()
     {
-        foreach (FloorData data in moveScript.pathWay)
-        {
-            data.parent = null;
-        }
-        moveScript.pathWay = new List<FloorData>();
-        yield return new WaitForSeconds(1f);
-        moveScript.walkable.Add(moveScript.start);
-        moveScript.start.listed = FloorData.looking.none;
-        moveScript.start = moveScript.end;
-
-        moveScript.nextPathNode = moveScript.start;
-        moveScript.nextPathNode.listed = FloorData.looking.ignore;
-        moveScript.walkable.Remove(moveScript.start);
-        moveScript.curTile = moveScript.start;
+        base.ResetPath();
+        yield return new WaitForSeconds(2f);
 
         if (state == State.patrol)
         {
             RandomPatrolEnd();
         }
-
-        if(state == State.chase)
-        {
-            moveScript.end = target.curTile;
-            moveScript.LookFrom();
-        }
-        yield return new WaitForSeconds(0f);
     }
 
     private bool DetectTarget()
@@ -98,5 +68,18 @@ public class StateMachineChaser : StateMachineBase
             }
         }
         else return false;
+    }
+    public override void StepEvent()
+    {
+        switch (state)
+        {
+            case State.patrol:
+                break;
+            case State.chase:
+                base.ResetPath();
+                moveScript.end = target.curTile;
+                moveScript.LookFrom();
+                break;
+        }
     }
 }

@@ -280,6 +280,17 @@ Transform:
   m_Father: {fileID: 540821208}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &223928576 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8709503652237149642, guid: 76e67ff76f53c3f4888fcccacaec9952, type: 3}
+  m_PrefabInstance: {fileID: 1139123875}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2892ecb061b34a34cb990d8b7942d0f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &476557054
 GameObject:
   m_ObjectHideFlags: 0
@@ -419,6 +430,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &549328689 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6755706820060992720, guid: 76e67ff76f53c3f4888fcccacaec9952, type: 3}
+  m_PrefabInstance: {fileID: 1139123875}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2892ecb061b34a34cb990d8b7942d0f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &608673473
 GameObject:
   m_ObjectHideFlags: 0
@@ -824,7 +846,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1642170145}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.18, y: 1.2, z: -5.21}
+  m_LocalPosition: {x: 2.46, y: 1.2, z: -5.21}
   m_LocalScale: {x: 0.9, y: 1, z: 0.9}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -885,6 +907,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveScript: {fileID: 1642170151}
+  startPos:
+  - {fileID: 549328689}
   atChest: {fileID: 0}
   keys: []
   objectives:
@@ -892,7 +916,6 @@ MonoBehaviour:
   - find key
   - find key
   - unlock door
-  spawnPoint: {fileID: 0}
   state: 0
 --- !u!54 &1642170153
 Rigidbody:
@@ -931,7 +954,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!136 &1883034537
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1004,7 +1027,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1883034536}
   m_LocalRotation: {x: -0, y: 0.70115674, z: -0, w: 0.7130072}
-  m_LocalPosition: {x: 0.45, y: 1.18, z: 2.34}
+  m_LocalPosition: {x: 2.6, y: 1.18, z: 2.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1024,7 +1047,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   angle: 0
-  range: 5
+  range: 10
   wallsMask:
     serializedVersion: 2
     m_Bits: 0
@@ -1065,9 +1088,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveScript: {fileID: 1883034542}
+  startPos:
+  - {fileID: 223928576}
   state: 0
   target: {fileID: 1642170151}
-  detectionRange: 5
+  detectionRange: 10
   wallsMask:
     serializedVersion: 2
     m_Bits: 8

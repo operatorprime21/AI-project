@@ -6,6 +6,7 @@ public class Movement : MonoBehaviour
 {
     public FloorData curTile;
     public FloorData nextTile;
+
     public bool canMove = false;
     private int revIndex = 0;
     public float startTime = 0f;
@@ -14,6 +15,8 @@ public class Movement : MonoBehaviour
     public FloorData start;
     public FloorData end;
     public FloorData nextPathNode;
+
+    private StateMachineBase stateMachine;
 
     public List<FloorData> openList = new List<FloorData>();
     public List<FloorData> closeList = new List<FloorData>();
@@ -27,7 +30,7 @@ public class Movement : MonoBehaviour
     void startInit()
     {
         FloorManager manager = GameObject.Find("Manager").GetComponent<FloorManager>();
-
+        stateMachine = this.gameObject.GetComponent<StateMachineBase>();
         foreach (FloorData data in manager.floorGrid)
         {
             if (data.Type == FloorData.type.walkable)
@@ -45,6 +48,7 @@ public class Movement : MonoBehaviour
             if(movingTime >= 1f)
             {
                 startTime = Time.time;
+                stateMachine.StepEvent();
                 ChangeTile();
             }
         }

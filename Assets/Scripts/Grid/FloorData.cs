@@ -26,12 +26,6 @@ public class FloorData : MonoBehaviour
         y = this.transform.position.z;
     }
 
-    private void Update()
-    {
-
-    }
-
-
     public List<FloorData> GetSurroundingFloor()
     {
         float newX = x;
