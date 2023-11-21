@@ -71,6 +71,7 @@ public class StateMachineChaser : StateMachineBase
     }
     public override void StepEvent()
     {
+        
         switch (state)
         {
             case State.patrol:

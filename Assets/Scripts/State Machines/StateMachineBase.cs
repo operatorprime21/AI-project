@@ -36,15 +36,18 @@ public abstract class StateMachineBase : MonoBehaviour
         moveScript.curTile = moveScript.start;
     }
 
-    public abstract void StepEvent(); 
+    public abstract void StepEvent();
     public bool ReachedEnd()
     {
-        if (this.transform.position == moveScript.end.pos.position && moveScript.canMove == true)
+        if (Vector3.Distance(transform.position, moveScript.end.pos.position) < 0.01f && moveScript.canMove == true)
         {
             moveScript.startTime = Time.time;
             moveScript.canMove = false;
             return true;
         }
-        else return false;
+        else
+        {
+            return false;
+        }
     }
 }

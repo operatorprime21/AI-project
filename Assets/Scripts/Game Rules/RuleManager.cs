@@ -45,7 +45,7 @@ public class RuleManager : MonoBehaviour
     {
         for (int i = 0; i <= 2; i++)
         {
-            int r = Random.Range(0, chests.Count - 1);
+            int r = Random.Range(0, chests.Count);
             if(i == 0)
             {
                 GameObject chest1 = chests[r];

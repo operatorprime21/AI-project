@@ -19,17 +19,31 @@ public class Door : MonoBehaviour
     {
         manager = GameObject.Find("Game Manager").GetComponent<RuleManager>();
     }
-    public void UseKey(GameObject playerkey)
+    public void UseKey(List<GameObject> playerkey)
     {
         StartCoroutine(UseKeyTime(playerkey));
     }
 
-    private IEnumerator UseKeyTime(GameObject playerkey)
+    private IEnumerator UseKeyTime(List<GameObject> playerkey)
     {
         unlocking = true;
-        yield return new WaitForSeconds(1.5f);
-        keys.Add(playerkey);
+        for(int i = 0; i <= 2; i++)
+        {
+            keys.Add(playerkey[i]);
+            yield return new WaitForSeconds(1.5f);
+            DisableLockMesh(playerkey[i]);
+        }
+        yield return new WaitForSeconds(1f);
+        if (IsDoorUnlocked() == true)
+        {
+            doorData.Type = FloorData.type.walkable;
+            doorMesh.SetActive(false);
+        }
+        unlocking = false;
+    }
 
+    private void DisableLockMesh(GameObject playerkey)
+    {
         if (playerkey == manager.keyR)
         {
             lockR.SetActive(false);
@@ -42,13 +56,6 @@ public class Door : MonoBehaviour
         {
             lockB.SetActive(false);
         }
-
-        if (IsDoorUnlocked() == true)
-        {
-            doorData.Type = FloorData.type.walkable;
-            doorMesh.SetActive(false);
-        }
-        unlocking = false;
     }
 
     private bool IsDoorUnlocked()
