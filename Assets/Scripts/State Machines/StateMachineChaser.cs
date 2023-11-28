@@ -45,11 +45,18 @@ public class StateMachineChaser : StateMachineBase
     {
         base.ResetPath();
         yield return new WaitForSeconds(2f);
+        RandomPatrolEnd();
+        //switch (state)
+        //{
+        //    case State.patrol:
+                
+        //        break;
+        //    case State.chase:
+        //        moveScript.end = target.curTile;
+        //        moveScript.LookFrom();
+        //        break;
+        //}
 
-        if (state == State.patrol)
-        {
-            RandomPatrolEnd();
-        }
     }
 
     private bool DetectTarget()
@@ -71,16 +78,6 @@ public class StateMachineChaser : StateMachineBase
     }
     public override void StepEvent()
     {
-        switch (state)
-        {
-            case State.patrol:
-                break;
-            case State.chase:
-                base.ResetPath();
-                moveScript.end = target.curTile;
-                Debug.Log(moveScript.end);
-                moveScript.LookFrom();
-                break;
-        }
+        
     }
 }
