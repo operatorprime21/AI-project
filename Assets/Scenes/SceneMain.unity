@@ -894,6 +894,7 @@ MonoBehaviour:
   closeList: []
   pathWay: []
   walkable: []
+  oneByOne: 0
 --- !u!114 &1642170152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1075,6 +1076,7 @@ MonoBehaviour:
   closeList: []
   pathWay: []
   walkable: []
+  oneByOne: 0
 --- !u!114 &1883034543
 MonoBehaviour:
   m_ObjectHideFlags: 0
