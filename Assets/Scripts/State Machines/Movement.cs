@@ -22,6 +22,8 @@ public class Movement : MonoBehaviour
     public List<FloorData> closeList = new List<FloorData>();
     public List<FloorData> pathWay = new List<FloorData>();
     public List<FloorData> walkable = new List<FloorData>();
+
+    public bool oneByOne = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,7 +47,7 @@ public class Movement : MonoBehaviour
         if(canMove)
         {
             this.transform.position = Vector3.Lerp(curTile.pos.position, nextTile.pos.position, movingTime);
-            if(movingTime >= 1f)
+            if(Vector3.Distance(transform.position, nextTile.pos.position)<= 0.01f)
             {
                 startTime = Time.time;
                 stateMachine.StepEvent();
@@ -71,19 +73,19 @@ public class Movement : MonoBehaviour
     public void LookFrom()
     {
         bool looking = true;
-        foreach (FloorData floors in nextPathNode.GetSurroundingFloor())
+        foreach (FloorData floor in nextPathNode.GetSurroundingFloor())
         {
-            if (floors.listed == FloorData.looking.none)
+            if (floor.listed == FloorData.looking.none)
             {
-                floors.parent = nextPathNode;
-                openList.Add(floors);
-                floors.listed = FloorData.looking.open;
+                floor.parent = nextPathNode;
+                openList.Add(floor);
+                floor.listed = FloorData.looking.open;
             }
-            if (floors == end)
+            if (floor == end)
             {
-                pathWay.Add(floors);
+                pathWay.Add(floor);
                 looking = false;
-                floors.GetParent(this);
+                floor.GetParent(this);
                 curTile = pathWay[pathWay.Count - 1];
                 nextTile = pathWay[pathWay.Count - 2];
                 canMove = true;
@@ -121,9 +123,9 @@ public class Movement : MonoBehaviour
                 curF.Add(data.f);
             }
         }
-        GetMinFValue(curF);
+        MinFValue(curF);
     }
-    private void GetMinFValue(List<float> curF)
+    private void MinFValue(List<float> curF)
     {
         for (int i = 0; i <= curF.Count; i++)
         {
@@ -153,11 +155,28 @@ public class Movement : MonoBehaviour
                 data.listed = FloorData.looking.close;
                 closeList.Add(data);
                 openList.Remove(data);
-                
+                //if(oneByOne)
+                //{
+                //    end = data;
+                //    pathWay.Add(data);
+                //    data.GetParent(this);
+                //    curTile = pathWay[pathWay.Count - 1];
+                //    nextTile = pathWay[pathWay.Count - 2];
+                //    canMove = true;
+                //    EmptyData();
+                //}
                 break;
             }
         }
-        LookFrom();
+        //if (oneByOne == false)
+        //{
+            LookFrom();
+        //}
+        //else
+        //{
+        //    oneByOne = false;
+        //}
+        
     }
     public void EmptyData()
     {
@@ -173,4 +192,18 @@ public class Movement : MonoBehaviour
         closeList = new List<FloorData>();
     }
 
+    //public void LookFrom(string next)
+    //{
+    //    oneByOne = true;
+    //    foreach (FloorData floor in nextPathNode.GetSurroundingFloor())
+    //    {
+    //        if (floor.listed == FloorData.looking.none)
+    //        {
+    //            floor.parent = nextPathNode;
+    //            openList.Add(floor);
+    //            floor.listed = FloorData.looking.open;
+    //        }
+    //    }
+    //    GetNextFloor();
+    //}
 }

@@ -71,7 +71,6 @@ public class StateMachineChaser : StateMachineBase
     }
     public override void StepEvent()
     {
-        
         switch (state)
         {
             case State.patrol:
@@ -79,6 +78,7 @@ public class StateMachineChaser : StateMachineBase
             case State.chase:
                 base.ResetPath();
                 moveScript.end = target.curTile;
+                Debug.Log(moveScript.end);
                 moveScript.LookFrom();
                 break;
         }
