@@ -8,7 +8,7 @@ public class Movement : MonoBehaviour
     public FloorData nextTile;
 
     public bool canMove = false;
-    private int revIndex = 0;
+    public int revIndex = 0;
     public float startTime = 0f;
     public float moveSpeed;
 
@@ -24,6 +24,7 @@ public class Movement : MonoBehaviour
     public List<FloorData> walkable = new List<FloorData>();
 
     public bool oneByOne = false;
+    public Color thisColor;
     // Start is called before the first frame update
     void Start()
     {
@@ -84,11 +85,13 @@ public class Movement : MonoBehaviour
             if (floor == end)
             {
                 pathWay.Add(floor);
+                
                 looking = false;
-                floor.GetParent(this);
+                floor.GetParent(this, thisColor);
                 curTile = pathWay[pathWay.Count - 1];
                 nextTile = pathWay[pathWay.Count - 2];
                 canMove = true;
+                start.listed = FloorData.looking.none;
                 EmptyData();
             }
         }
@@ -190,6 +193,7 @@ public class Movement : MonoBehaviour
             data.ResetData();
         }
         closeList = new List<FloorData>();
+
     }
 
     //public void LookFrom(string next)

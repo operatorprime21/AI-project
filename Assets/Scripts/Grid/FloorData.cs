@@ -61,16 +61,25 @@ public class FloorData : MonoBehaviour
         return nextFloors;
     }
 
-    public void GetParent(Movement owner)
+    public void GetParent(Movement owner, Color color)
     {
         if(parent!=null)
         {
             StopAllCoroutines();
             owner.pathWay.Add(parent);
-            parent.GetParent(owner);
+            parent.GetParent(owner, color) ;
+            Debug.DrawLine(pos.position, parent.pos.position, color, 2f);
         }
-        
     }
+
+    //void OnDrawGizmosSelected()
+    //{
+    //    if (parent != null)
+    //    {
+    //        //Gizmos.color = Color.blue;
+           
+    //    }
+    //}
 
     public void ResetData()
     {

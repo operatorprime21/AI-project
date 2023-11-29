@@ -19,10 +19,7 @@ public class StateMachineChaser : StateMachineBase
     // Update is called once per frame
     void Update()
     {
-        if (base.ReachedEnd() == true)
-        {
-            StartCoroutine(RestartNewPath());
-        }
+        
 
         if (DetectTarget() == true)
         {
@@ -45,17 +42,16 @@ public class StateMachineChaser : StateMachineBase
     {
         base.ResetPath();
         yield return new WaitForSeconds(2f);
-        RandomPatrolEnd();
-        //switch (state)
-        //{
-        //    case State.patrol:
+
+        switch (state)
+        {
+            case State.patrol:
+                RandomPatrolEnd();
+                break;
+            case State.chase:
                 
-        //        break;
-        //    case State.chase:
-        //        moveScript.end = target.curTile;
-        //        moveScript.LookFrom();
-        //        break;
-        //}
+                break;
+        }
 
     }
 
@@ -76,8 +72,26 @@ public class StateMachineChaser : StateMachineBase
         }
         else return false;
     }
+
     public override void StepEvent()
     {
-        
+        if (base.ReachedEnd() == true)
+        {
+            StartCoroutine(RestartNewPath());
+        }
+        switch (state)
+        {
+            case State.patrol:
+                
+                break;
+            case State.chase:
+                base.ResetPath();
+                moveScript.EmptyData();
+                moveScript.end = target.curTile;
+                moveScript.LookFrom();
+                moveScript.revIndex = 0;
+                moveScript.canMove = true;
+                break;
+        }
     }
 }
