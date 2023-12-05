@@ -32,9 +32,10 @@ public class Movement : MonoBehaviour
     }
     void startInit()
     {
-        FloorManager manager = GameObject.Find("Manager").GetComponent<FloorManager>();
+        FloorManager manager = GameObject.Find("Grid Manager").GetComponent<FloorManager>();
         stateMachine = this.gameObject.GetComponent<StateMachineBase>();
-        foreach (FloorData data in manager.floorGrid)
+        List<FloorData> grid = new List<FloorData>(manager.floorGrid);
+        foreach (FloorData data in grid)
         {
             if (data.Type == FloorData.type.walkable)
             {
@@ -117,7 +118,7 @@ public class Movement : MonoBehaviour
     }
     public void GetNextFloor()
     {
-        List<float> curF = new List<float>();
+        List<float> curF =   new List<float>();
         foreach (FloorData data in openList)
         {
             data.f = FValueCalc(data);

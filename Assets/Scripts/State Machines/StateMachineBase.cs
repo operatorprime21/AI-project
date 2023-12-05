@@ -11,7 +11,7 @@ public abstract class StateMachineBase : MonoBehaviour
     public void StartingPosition()
     {
         manager = GameObject.Find("Game Manager").GetComponent<RuleManager>();
-        int r = Random.Range(0, startPos.Count - 1);
+        int r = Random.Range(0, startPos.Count);
         moveScript.start = startPos[r];
         moveScript.nextPathNode = moveScript.start;
         moveScript.nextPathNode.listed = FloorData.looking.ignore;
