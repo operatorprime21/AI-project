@@ -32,7 +32,7 @@ public class StateMachineLurker : StateMachineBase
     {
         if (manager.chestPosition.Count > 0)
         {
-            int r = Random.Range(0, manager.chestPosition.Count - 1);
+            int r = Random.Range(0, manager.chestPosition.Count);
             FloorData chosenChest = manager.chestPosition[r];
             moveScript.end = chosenChest;
             manager.chestPosition.Remove(chosenChest);

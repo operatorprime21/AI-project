@@ -6,21 +6,20 @@ public class FloorData : MonoBehaviour
 {
     public enum type { walkable, notWalkable};
     public type Type;
-    public enum looking { none, open, close, ignore };
+    public enum looking { none, ignore };
     public looking listed;
 
     public float x;
     public float y;
-    public float g;
-    public float h;
-    public float f;
+    public float[] g = new float[2];
+    public float[] h = new float[2];
+    public float[] f = new float[2];
 
     public Transform pos;
     public FloorData parent;
 
     private void Start()
     {
-        //StartCoroutine(Scan());
         this.gameObject.name = this.transform.position.x.ToString() + ", " + this.transform.position.z.ToString();
         x = this.transform.position.x;
         y = this.transform.position.z;
@@ -65,7 +64,6 @@ public class FloorData : MonoBehaviour
     {
         if(parent!=null)
         {
-            //wsStopAllCoroutines();
             owner.pathWay.Add(parent);
             parent.GetParent(owner, color) ;
             Debug.DrawLine(pos.position, parent.pos.position, color, 2f);
@@ -73,22 +71,13 @@ public class FloorData : MonoBehaviour
         }
     }
 
-    //void OnDrawGizmosSelected()
-    //{
-    //    if (parent != null)
-    //    {
-    //        //Gizmos.color = Color.blue;
-           
-    //    }
-    //}
-
-    public void ResetData()
+    public void ResetData(int id)
     {
         Type = type.walkable;
         listed = looking.none;
-        g = 0;
-        h = 0;
-        f = 0;
+        g[id] = 0f;
+        h[id] = 0f;
+        f[id] = 0f;
         parent = null;
     }
 }
