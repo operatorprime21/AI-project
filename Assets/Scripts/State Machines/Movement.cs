@@ -35,6 +35,12 @@ public class Movement : MonoBehaviour
         FloorManager manager = GameObject.Find("Grid Manager").GetComponent<FloorManager>();
         stateMachine = this.gameObject.GetComponent<StateMachineBase>();
         List<FloorData> grid = new List<FloorData>(manager.floorGrid);
+        //List<FloorData> grid = new();
+        //foreach (FloorData data in manager.floorGrid)
+        //{
+        //    grid.Add(data.Clone());
+        //}
+
         foreach (FloorData data in grid)
         {
             if (data.Type == FloorData.type.walkable)
@@ -75,12 +81,34 @@ public class Movement : MonoBehaviour
     public void LookFrom()
     {
         bool looking = true;
+
+        openList.Add(nextPathNode.Clone());
+        while (openList.Count > 0)
+        {
+            //current should be tile with lowest F
+            FloorData current = openList[0];
+            foreach (FloorData floor in current.GetSurroundingFloor())
+            {
+                if (openList.Contains(floor) || closeList.Contains(floor))
+                {
+                    
+                }
+                else openList.Add(floor.Clone());
+            }
+        }
+
+
+
         foreach (FloorData floor in nextPathNode.GetSurroundingFloor())
         {
-            if (floor.listed == FloorData.looking.none)
+            if (openList.Contains(floor) || closeList.Contains(floor))
+            {
+                
+            }
+            else
             {
                 floor.parent = nextPathNode;
-                openList.Add(floor);
+                openList.Add(floor.Clone()) ;
                 floor.listed = FloorData.looking.open;
             }
             if (floor == end)

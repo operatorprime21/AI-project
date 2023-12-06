@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FloorData : MonoBehaviour
 {
-    public enum type { walkable, notWalkable};
+    public enum type { walkable, notWalkable };
     public type Type;
     public enum looking { none, open, close, ignore };
     public looking listed;
@@ -18,6 +18,27 @@ public class FloorData : MonoBehaviour
     public Transform pos;
     public FloorData parent;
 
+    public FloorData()
+    {
+        Clone();
+    }
+
+
+    public FloorData Clone()
+    {
+        FloorData newToReturn = new FloorData();
+        newToReturn.Type = this.Type;
+        newToReturn.listed = this.listed;
+        newToReturn.x = this.x;
+        newToReturn.y = this.y;
+        newToReturn.g = this.g;
+        newToReturn.h = this.h;
+        newToReturn.f = this.f;
+        newToReturn.pos = this.pos;
+        newToReturn.parent = this.parent;
+
+        return newToReturn;
+    }    
     private void Start()
     {
         //StartCoroutine(Scan());
@@ -25,7 +46,6 @@ public class FloorData : MonoBehaviour
         x = this.transform.position.x;
         y = this.transform.position.z;
     }
-
     public List<FloorData> GetSurroundingFloor()
     {
         float newX = x;
@@ -60,7 +80,6 @@ public class FloorData : MonoBehaviour
 
         return nextFloors;
     }
-
     public void GetParent(Movement owner, Color color)
     {
         if(parent!=null)
@@ -72,16 +91,6 @@ public class FloorData : MonoBehaviour
             parent = null;
         }
     }
-
-    //void OnDrawGizmosSelected()
-    //{
-    //    if (parent != null)
-    //    {
-    //        //Gizmos.color = Color.blue;
-           
-    //    }
-    //}
-
     public void ResetData()
     {
         Type = type.walkable;
@@ -92,3 +101,4 @@ public class FloorData : MonoBehaviour
         parent = null;
     }
 }
+
