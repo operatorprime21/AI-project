@@ -775,7 +775,6 @@ GameObject:
   - component: {fileID: 1642170148}
   - component: {fileID: 1642170147}
   - component: {fileID: 1642170146}
-  - component: {fileID: 1642170150}
   - component: {fileID: 1642170151}
   - component: {fileID: 1642170152}
   - component: {fileID: 1642170153}
@@ -865,23 +864,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1642170150
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1642170145}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b90ab41b2d006409ac3f8f61abf6e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  angle: 120
-  range: 5
-  wallsMask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!114 &1642170151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -897,7 +879,6 @@ MonoBehaviour:
   curTile: {fileID: 0}
   nextTile: {fileID: 0}
   canMove: 0
-  revIndex: 0
   startTime: 0
   moveSpeed: 5
   start: {fileID: 0}
@@ -960,7 +941,6 @@ GameObject:
   - component: {fileID: 1883034539}
   - component: {fileID: 1883034538}
   - component: {fileID: 1883034537}
-  - component: {fileID: 1883034541}
   - component: {fileID: 1883034542}
   - component: {fileID: 1883034543}
   m_Layer: 0
@@ -969,7 +949,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!136 &1883034537
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1049,23 +1029,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 89.04, z: 0}
---- !u!114 &1883034541
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1883034536}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b90ab41b2d006409ac3f8f61abf6e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  angle: 0
-  range: 10
-  wallsMask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!114 &1883034542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1081,7 +1044,6 @@ MonoBehaviour:
   curTile: {fileID: 0}
   nextTile: {fileID: 0}
   canMove: 0
-  revIndex: 0
   startTime: 0
   moveSpeed: 5
   start: {fileID: 0}
@@ -1092,7 +1054,7 @@ MonoBehaviour:
   pathWay: []
   walkable: []
   thisColor: {r: 1, g: 0, b: 0, a: 1}
-  id: 0
+  id: 1
 --- !u!114 &1883034543
 MonoBehaviour:
   m_ObjectHideFlags: 0
