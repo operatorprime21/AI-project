@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StateMachineChaser : StateMachineBase
 {
-    public enum State { patrol, chase }
+    public enum State { patrol, chase, ph }
     public State state;
 
     public Movement target;
@@ -85,12 +85,10 @@ public class StateMachineChaser : StateMachineBase
                 
                 break;
             case State.chase:
-                base.ResetPath();
                 moveScript.EmptyData();
                 moveScript.end = target.curTile;
+                base.ResetPath();
                 moveScript.LookFrom();
-                moveScript.revIndex = 0;
-                moveScript.canMove = true;
                 break;
         }
     }

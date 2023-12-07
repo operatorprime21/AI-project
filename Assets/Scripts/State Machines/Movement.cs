@@ -8,7 +8,6 @@ public class Movement : MonoBehaviour
     public FloorData nextTile;
 
     public bool canMove = false;
-    public int revIndex = 0;
     public float startTime = 0f;
     public float moveSpeed;
 
@@ -59,18 +58,13 @@ public class Movement : MonoBehaviour
     }
     public void ChangeTile()
     {
-        revIndex++;
-        if(pathWay.Count - revIndex == 0)
+        //revIndex++;
+        if(pathWay.Count>=2)
         {
-            curTile = pathWay[1];
-            nextTile = end;
-            revIndex = 0;
+            curTile = pathWay[pathWay.Count - 1];
+            nextTile = pathWay[pathWay.Count - 2];
+            pathWay.RemoveAt(pathWay.Count - 1);
         }
-        else
-        {
-            curTile = pathWay[pathWay.Count - revIndex];
-            nextTile = pathWay[pathWay.Count - revIndex - 1];
-        }    
     }
     public void LookFrom()
     {
@@ -79,7 +73,7 @@ public class Movement : MonoBehaviour
         {
             if (!openList.Contains(floor) && !closeList.Contains(floor))
             {
-                floor.parent = nextPathNode;
+                floor.parent[id] = nextPathNode;
                 openList.Add(floor);
             }
             if (floor == end)
@@ -92,6 +86,7 @@ public class Movement : MonoBehaviour
                 canMove = true;
                 start.listed = FloorData.looking.none;
                 EmptyData();
+                break;
             }
         }
 
@@ -118,15 +113,15 @@ public class Movement : MonoBehaviour
 
     public float FValueCalc(FloorData floorFrom)
     {
-        float gXFromParent = Mathf.Abs(floorFrom.parent.x - floorFrom.x);
-        float gYFromParent = Mathf.Abs(floorFrom.parent.y - floorFrom.y);
+        float gXFromParent = Mathf.Abs(floorFrom.parent[id].x - floorFrom.x);
+        float gYFromParent = Mathf.Abs(floorFrom.parent[id].y - floorFrom.y);
         float gFromParent = Mathf.Sqrt(gXFromParent * gXFromParent + gYFromParent * gYFromParent);
 
         float hX = Mathf.Abs(end.x - floorFrom.x);
         float hY = Mathf.Abs(end.y - floorFrom.y);
         float hValue = Mathf.Sqrt(hX * hX + hY * hY);
 
-        floorFrom.g[id] = gFromParent + floorFrom.parent.g[id];
+        floorFrom.g[id] = gFromParent + floorFrom.parent[id].g[id];
 
         floorFrom.h[id] = hValue;
         return floorFrom.g[id] + floorFrom.h[id];
@@ -160,7 +155,6 @@ public class Movement : MonoBehaviour
                 nextPathNode = data;
                 closeList.Add(data);
                 openList.Remove(data);
-
                 break;
             }
         }

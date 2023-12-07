@@ -4,25 +4,33 @@ using UnityEngine;
 
 public class FloorData : MonoBehaviour
 {
-    public enum type { walkable, notWalkable};
-    public type Type;
+    //Special 'start' ignore data to prevent parent looping
     public enum looking { none, ignore };
     public looking listed;
 
+    //Fixed base data
+    public enum type { walkable, notWalkable };
+    public type Type;
     public float x;
     public float y;
-    public float[] g = new float[2];
-    public float[] h = new float[2];
-    public float[] f = new float[2];
-
     public Transform pos;
-    public FloorData parent;
+
+    //Individual A* data
+    public float[] g;
+    public float[] h;
+    public float[] f;
+    public FloorData[] parent;
 
     private void Start()
     {
         this.gameObject.name = this.transform.position.x.ToString() + ", " + this.transform.position.z.ToString();
         x = this.transform.position.x;
         y = this.transform.position.z;
+
+        g = new float[] { 0, 0 };
+        h = new float[] { 0, 0 };
+        f = new float[] { 0, 0 };
+        parent = new FloorData[] { null, null };
     }
 
     public List<FloorData> GetSurroundingFloor()
@@ -62,12 +70,12 @@ public class FloorData : MonoBehaviour
 
     public void GetParent(Movement owner, Color color)
     {
-        if(parent!=null)
+        if(parent[owner.id]!=null)
         {
-            owner.pathWay.Add(parent);
-            parent.GetParent(owner, color) ;
-            Debug.DrawLine(pos.position, parent.pos.position, color, 2f);
-            parent = null;
+            owner.pathWay.Add(parent[owner.id]);
+            parent[owner.id].GetParent(owner, color);
+            Debug.DrawLine(pos.position, parent[owner.id].pos.position, color, 2f);
+            parent[owner.id] = null;
         }
     }
 
@@ -78,6 +86,6 @@ public class FloorData : MonoBehaviour
         g[id] = 0f;
         h[id] = 0f;
         f[id] = 0f;
-        parent = null;
+        parent[id] = null;
     }
 }

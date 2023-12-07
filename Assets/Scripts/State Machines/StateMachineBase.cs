@@ -22,13 +22,13 @@ public abstract class StateMachineBase : MonoBehaviour
     {
         foreach (FloorData data in moveScript.pathWay)
         {
-            data.parent = null;
+            data.parent[moveScript.id] = null;
         }
         moveScript.pathWay = new List<FloorData>();
 
         moveScript.walkable.Add(moveScript.start);
         moveScript.start.listed = FloorData.looking.none;
-        moveScript.start = moveScript.end;
+        moveScript.start = moveScript.curTile;
 
         moveScript.nextPathNode = moveScript.start;
         moveScript.nextPathNode.listed = FloorData.looking.ignore;

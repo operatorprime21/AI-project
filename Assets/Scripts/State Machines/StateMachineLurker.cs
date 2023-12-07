@@ -74,8 +74,6 @@ public class StateMachineLurker : StateMachineBase
 
     public override void StepEvent()
     {
-        
-
         switch (state)
         {
             case State.searching:
@@ -87,7 +85,6 @@ public class StateMachineLurker : StateMachineBase
                             SearchChest();
                         }
                     }
-
                     if (objectives[0] == "unlock door")
                     {
                         if(this.transform.position == manager.GetDoorstep().pos.position && !manager.door.GetComponent<Door>().unlocking)
@@ -97,7 +94,6 @@ public class StateMachineLurker : StateMachineBase
                         }
                     }
                 }
-                
                 break;
             case State.hiding:
                 break;
