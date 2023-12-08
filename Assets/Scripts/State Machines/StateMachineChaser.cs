@@ -29,6 +29,10 @@ public class StateMachineChaser : StateMachineBase
         //{
         //    state = State.patrol;
         //}
+        if (state == State.chase)
+        {
+            moveScript.canMove = true;
+        }
     }
 
     public void RandomPatrolEnd()
