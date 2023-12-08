@@ -40,7 +40,7 @@ public class StateMachineChaser : StateMachineBase
 
     public IEnumerator RestartNewPath()
     {
-        base.ResetPath();
+        base.ResetPath(false);
         yield return new WaitForSeconds(2f);
 
         switch (state)
@@ -87,7 +87,7 @@ public class StateMachineChaser : StateMachineBase
             case State.chase:
                 moveScript.EmptyData();
                 moveScript.end = target.curTile;
-                base.ResetPath();
+                base.ResetPath(true);
                 moveScript.LookFrom();
                 break;
         }

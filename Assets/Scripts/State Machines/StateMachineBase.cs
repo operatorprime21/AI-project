@@ -18,23 +18,28 @@ public abstract class StateMachineBase : MonoBehaviour
         moveScript.walkable.Remove(moveScript.start);
     }
 
-    public void ResetPath()
+    public void ResetPath(bool interupted)
     {
-        foreach (FloorData data in moveScript.pathWay)
-        {
-            data.parent[moveScript.id] = null;
-        }
         moveScript.pathWay = new List<FloorData>();
 
         moveScript.walkable.Add(moveScript.start);
         moveScript.start.listed = FloorData.looking.none;
-        moveScript.start = moveScript.curTile;
-
+        if(interupted)
+        {
+            moveScript.start = moveScript.nextTile;
+        }
+        else
+        {
+            moveScript.start = moveScript.curTile;
+        }
+        
         moveScript.nextPathNode = moveScript.start;
         moveScript.nextPathNode.listed = FloorData.looking.ignore;
         moveScript.walkable.Remove(moveScript.start);
         moveScript.curTile = moveScript.start;
     }
+
+
 
     public abstract void StepEvent();
     public bool ReachedEnd()

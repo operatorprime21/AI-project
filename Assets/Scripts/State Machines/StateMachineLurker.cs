@@ -56,7 +56,7 @@ public class StateMachineLurker : StateMachineBase
 
     public IEnumerator RestartNewPath()
     {
-        base.ResetPath();
+        base.ResetPath(false);
 
         yield return new WaitForSeconds(3f);
 

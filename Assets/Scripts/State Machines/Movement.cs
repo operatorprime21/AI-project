@@ -51,8 +51,9 @@ public class Movement : MonoBehaviour
             if(Vector3.Distance(transform.position, nextTile.pos.position)<= 0.01f)
             {
                 startTime = Time.time;
-                stateMachine.StepEvent();
                 ChangeTile();
+                stateMachine.StepEvent();
+                
             }
         }
     }
