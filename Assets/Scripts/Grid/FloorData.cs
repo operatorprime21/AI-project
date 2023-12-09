@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class FloorData : MonoBehaviour
 {
-    //Special 'start' ignore data to prevent parent looping
-    public enum looking { none, ignore };
-    public looking listed;
-
     //Fixed base data
     public enum type { walkable, notWalkable };
     public type Type;
@@ -33,15 +29,15 @@ public class FloorData : MonoBehaviour
         parent = new FloorData[] { null, null };
     }
 
-    public List<FloorData> GetSurroundingFloor()
+    public List<FloorData> GetSurroundingFloor(int range)
     {
         float newX = x;
         float newY = y;
         int c = 0;
         List<FloorData> nextFloors = new List<FloorData>();
-        for (int x = -1; x <= 1; x++)
+        for (int x = -range; x <= range; x++)
         {
-            for (int y = -1; y <= 1; y++)
+            for (int y = -range; y <= range; y++)
             {
                 if (x != 0 || y != 0)
                 {
@@ -50,27 +46,22 @@ public class FloorData : MonoBehaviour
                     GameObject floor = GameObject.Find(lookingX.ToString() + ", " + lookingY.ToString());                 
                     if (floor != null)
                     {
-                        //Debug.Log(floor);
                         FloorData nextData = floor.GetComponent<FloorData>();
-                        if (nextData.listed == FloorData.looking.none)
+                        if (nextData.Type != FloorData.type.notWalkable)
                         {
-                            if (nextData.Type != FloorData.type.notWalkable)
-                            {
-                                nextFloors.Add(floor.GetComponent<FloorData>());
-                                c++;
-                            }
+                            nextFloors.Add(floor.GetComponent<FloorData>());
+                            c++;
                         }
                     }
                 }
             }
         }
-
         return nextFloors;
     }
 
     public void GetParent(Movement owner, Color color)
     {
-        if(parent[owner.id]!=null)
+        if(parent[owner.id]!=null && this!= owner.start)
         {
             owner.pathWay.Add(parent[owner.id]);
             parent[owner.id].GetParent(owner, color);
@@ -82,7 +73,6 @@ public class FloorData : MonoBehaviour
     public void ResetData(int id)
     {
         Type = type.walkable;
-        listed = looking.none;
         g[id] = 0f;
         h[id] = 0f;
         f[id] = 0f;

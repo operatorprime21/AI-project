@@ -4,41 +4,41 @@ using UnityEngine;
 
 public class StateMachineChaser : StateMachineBase
 {
-    public enum State { patrol, chase, ph }
+    public enum State { patrol, chasing, lostChase }
     public State state;
 
-    public Movement target;
-    public float detectionRange;
-    public LayerMask wallsMask;
     void Start()
     {
-        base.StartingPosition();
-        RandomPatrolEnd();
+        StartCoroutine(StartRest());
     }
 
+    IEnumerator StartRest()
+    {
+        yield return new WaitForSeconds(2f);
+        base.StartingPosition();
+        RandomPatrolEnd();
+    }    
     // Update is called once per frame
     void Update()
     {
-        
-
-        if (DetectTarget() == true)
+        if (base.DetectTarget() == true)
         {
-            state = State.chase;
+            state = State.chasing;
+            Debug.Log(base.DetectTarget());
         }
-        //else
-        //{
-        //    state = State.patrol;
-        //}
-        if (state == State.chase)
+        else
         {
-            moveScript.canMove = true;
-        }
+            if(state == State.chasing)
+            {
+                state = State.lostChase;
+            }
+        }    
     }
 
     public void RandomPatrolEnd()
     {
-        int r = Random.Range(0, moveScript.walkable.Count - 1);
-        moveScript.end = moveScript.walkable[r];
+        int r = Random.Range(0, opponentNoiseArea.Count);
+        moveScript.end = opponentNoiseArea[r];
         moveScript.LookFrom();
     }
 
@@ -52,29 +52,10 @@ public class StateMachineChaser : StateMachineBase
             case State.patrol:
                 RandomPatrolEnd();
                 break;
-            case State.chase:
-                
+            case State.lostChase:
+                RandomPatrolEnd();
                 break;
         }
-
-    }
-
-    private bool DetectTarget()
-    {
-        Vector3 dirToTarget = (target.transform.position- transform.position).normalized;
-        float distToTarget = Vector3.Distance(transform.position, target.transform.position);
-        if (distToTarget < detectionRange)
-        {
-            if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, wallsMask))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else return false;
     }
 
     public override void StepEvent()
@@ -88,12 +69,13 @@ public class StateMachineChaser : StateMachineBase
             case State.patrol:
                 
                 break;
-            case State.chase:
+            case State.chasing:
                 moveScript.EmptyData();
-                moveScript.end = target.curTile;
+                moveScript.end = opponent.curTile;
                 base.ResetPath(true);
                 moveScript.LookFrom();
                 break;
         }
+        opponent.stateMachine.opponentNoiseArea = base.NoiseArea(noiseRange);
     }
 }

@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour
     public FloorData end;
     public FloorData nextPathNode;
 
-    private StateMachineBase stateMachine;
+    public StateMachineBase stateMachine;
 
     public List<FloorData> openList = new List<FloorData>();
     public List<FloorData> closeList = new List<FloorData>();
@@ -44,74 +44,89 @@ public class Movement : MonoBehaviour
     }
     void Update()
     {
-        float movingTime =+ (Time.time - startTime) * moveSpeed;
-        if(canMove)
+        LerpMovement();
+    }
+    private void LerpMovement()
+    {
+        float movingTime = +(Time.time - startTime) * moveSpeed;
+        if (canMove)
         {
-            this.transform.position = Vector3.Lerp(curTile.pos.position, nextTile.pos.position, movingTime);
-            if(Vector3.Distance(transform.position, nextTile.pos.position)<= 0.01f)
+            if (pathWay != null)
             {
-                startTime = Time.time;
-                ChangeTile();
-                stateMachine.StepEvent();
-                
+                this.transform.position = Vector3.Lerp(curTile.pos.position, nextTile.pos.position, movingTime);
+                if (Vector3.Distance(transform.position, nextTile.pos.position) <= 0.01f)
+                {
+                    startTime = Time.time;
+                    ChangeTile();
+                    stateMachine.StepEvent();
+                }
             }
         }
     }
+
     public void ChangeTile()
     {
-        //revIndex++;
-        if(pathWay.Count>=2)
+        if (pathWay.Count >= 2)
         {
             curTile = pathWay[pathWay.Count - 1];
             nextTile = pathWay[pathWay.Count - 2];
             pathWay.RemoveAt(pathWay.Count - 1);
         }
+        else
+        {
+            curTile = nextTile;
+        }
     }
     public void LookFrom()
     {
         bool looking = true;
-        foreach (FloorData floor in nextPathNode.GetSurroundingFloor())
+        if (start != end)
         {
-            if (!openList.Contains(floor) && !closeList.Contains(floor))
+            foreach (FloorData floor in nextPathNode.GetSurroundingFloor(1))
             {
-                floor.parent[id] = nextPathNode;
-                openList.Add(floor);
-            }
-            if (floor == end)
-            {
-                pathWay.Add(floor);
-                looking = false;
-                floor.GetParent(this, thisColor);
-                curTile = pathWay[pathWay.Count - 1];
-                nextTile = pathWay[pathWay.Count - 2];
-                canMove = true;
-                start.listed = FloorData.looking.none;
-                EmptyData();
-                break;
+                if (!openList.Contains(floor) && !closeList.Contains(floor))
+                {
+                    floor.parent[id] = nextPathNode;
+                    openList.Add(floor);
+                }
+                if (floor == end)
+                {
+                    pathWay.Add(floor);
+                    looking = false;
+                    floor.GetParent(this, thisColor);
+                    curTile = pathWay[pathWay.Count - 1];
+                    nextTile = pathWay[pathWay.Count - 2];
+                    canMove = true;
+                    EmptyData();
+                    break;
+                }
             }
         }
-
+        else
+        {
+            looking = false;
+            canMove = true;
+            EmptyData();
+        }
 
         if (looking)
         {
             GetNextFloor();
         }
     }
-    
     public void GetNextFloor()
     {
         List<float> curF = new List<float>();
         foreach (FloorData data in openList)
         {
             data.f[id] = FValueCalc(data);
-            if (data.listed == FloorData.looking.none)
+            if (data!=start)
             {
                 curF.Add(data.f[id]);
             }
         }
         MinFValue(curF);
     }
-
     public float FValueCalc(FloorData floorFrom)
     {
         float gXFromParent = Mathf.Abs(floorFrom.parent[id].x - floorFrom.x);
@@ -161,7 +176,6 @@ public class Movement : MonoBehaviour
         }
         LookFrom();
     }
-
     public void EmptyData()
     {
         foreach (FloorData data in openList)

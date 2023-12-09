@@ -78,7 +78,8 @@ public class StateMachineLurker : StateMachineBase
         {
             case State.searching:
                 {
-                    if(objectives[0] == "find key")
+                    noiseRange = 5;
+                    if (objectives[0] == "find key")
                     {
                         if (atChest != null)
                         {
@@ -100,5 +101,6 @@ public class StateMachineLurker : StateMachineBase
             case State.running:
                 break;
         }
+        opponent.stateMachine.opponentNoiseArea = base.NoiseArea(noiseRange);
     }
 }
