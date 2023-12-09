@@ -63,10 +63,13 @@ public class FloorData : MonoBehaviour
     {
         if(parent[owner.id]!=null && this!= owner.start)
         {
-            owner.pathWay.Add(parent[owner.id]);
-            parent[owner.id].GetParent(owner, color);
-            Debug.DrawLine(pos.position, parent[owner.id].pos.position, color, 2f);
-            parent[owner.id] = null;
+            if(!owner.pathWay.Contains(parent[owner.id]))
+            {
+                owner.pathWay.Add(parent[owner.id]);
+                parent[owner.id].GetParent(owner, color);
+                Debug.DrawLine(pos.position, parent[owner.id].pos.position, color, 2f);
+                parent[owner.id] = null;
+            }
         }
     }
 

@@ -21,10 +21,24 @@ public class StateMachineLurker : StateMachineBase
     {
         if (state == State.searching)
         {
-            if (base.ReachedEnd() == true)
+            
+        }
+
+        if(base.DetectTarget()==true)
+        {
+            state = State.running;
+        }
+        else if(state == State.running)
+        {
+            if(opponent.stateMachine.opponentNoiseArea.Contains(moveScript.curTile))
             {
-                StartCoroutine(RestartNewPath());
+                state = State.hiding;
             }
+        }
+
+        if(state == State.hiding)
+        {
+
         }
     }
 
@@ -60,45 +74,57 @@ public class StateMachineLurker : StateMachineBase
 
         yield return new WaitForSeconds(3f);
 
-        if (objectives[0] == "find key")
+        switch (state)
         {
-            FindRandomChest();
-        }
-        else if (objectives[0] == "unlock door")
-        {
-            moveScript.end = manager.GetDoorstep();
-            moveScript.LookFrom();
+            case State.searching:
+                if (objectives[0] == "find key")
+                {
+                    if (atChest != null)
+                    {
+                        SearchChest();
+                    }
+                    FindRandomChest();
+                }
+                else if (objectives[0] == "unlock door")
+                {
+                    moveScript.end = manager.GetDoorstep();
+                    moveScript.LookFrom();
+                    if (this.transform.position == manager.GetDoorstep().pos.position && !manager.door.GetComponent<Door>().unlocking)
+                    {
+                        moveScript.enabled = false;
+                        manager.door.GetComponent<Door>().UseKey(keys);
+                    }
+                }
+                break;
         }
 
     }
 
     public override void StepEvent()
     {
+        if (base.ReachedEnd() == true)
+        {
+            StartCoroutine(RestartNewPath());
+        }
         switch (state)
         {
             case State.searching:
                 {
-                    noiseRange = 5;
-                    if (objectives[0] == "find key")
-                    {
-                        if (atChest != null)
-                        {
-                            SearchChest();
-                        }
-                    }
-                    if (objectives[0] == "unlock door")
-                    {
-                        if(this.transform.position == manager.GetDoorstep().pos.position && !manager.door.GetComponent<Door>().unlocking)
-                        {
-                            moveScript.enabled = false;
-                            manager.door.GetComponent<Door>().UseKey(keys);
-                        }
-                    }
+                    noiseRange = 10;
+                    moveScript.moveSpeed = 4f;
                 }
                 break;
             case State.hiding:
+                {
+                    noiseRange = 20;
+                    moveScript.moveSpeed = 2.5f;
+                }
                 break;
             case State.running:
+                {
+                    noiseRange = 2;
+                    moveScript.moveSpeed = 6f;
+                }
                 break;
         }
         opponent.stateMachine.opponentNoiseArea = base.NoiseArea(noiseRange);

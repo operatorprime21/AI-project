@@ -16,7 +16,7 @@ public class StateMachineChaser : StateMachineBase
     {
         yield return new WaitForSeconds(2f);
         base.StartingPosition();
-        RandomPatrolEnd();
+        SearchNoiseArea();
     }    
     // Update is called once per frame
     void Update()
@@ -24,18 +24,18 @@ public class StateMachineChaser : StateMachineBase
         if (base.DetectTarget() == true)
         {
             state = State.chasing;
-            Debug.Log(base.DetectTarget());
         }
         else
         {
-            if(state == State.chasing)
+            if (state == State.chasing)
             {
+                //moveScript.end = moveScript.nextTile;
                 state = State.lostChase;
             }
-        }    
+        }
     }
 
-    public void RandomPatrolEnd()
+    public void SearchNoiseArea()
     {
         int r = Random.Range(0, opponentNoiseArea.Count);
         moveScript.end = opponentNoiseArea[r];
@@ -50,12 +50,14 @@ public class StateMachineChaser : StateMachineBase
         switch (state)
         {
             case State.patrol:
-                RandomPatrolEnd();
+                SearchNoiseArea();
                 break;
             case State.lostChase:
-                RandomPatrolEnd();
+                //moveScript.EmptyData();
+                SearchNoiseArea();
                 break;
         }
+        StopAllCoroutines();
     }
 
     public override void StepEvent()
@@ -67,9 +69,14 @@ public class StateMachineChaser : StateMachineBase
         switch (state)
         {
             case State.patrol:
-                
+                moveScript.moveSpeed = 4f;
+                break;
+            case State.lostChase:
+                moveScript.moveSpeed = 3.5f;
                 break;
             case State.chasing:
+                moveScript.moveSpeed = 6.1f;
+                StopAllCoroutines();
                 moveScript.EmptyData();
                 moveScript.end = opponent.curTile;
                 base.ResetPath(true);

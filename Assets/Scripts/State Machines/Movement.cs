@@ -91,7 +91,10 @@ public class Movement : MonoBehaviour
                 }
                 if (floor == end)
                 {
-                    pathWay.Add(floor);
+                    if(!pathWay.Contains(floor))
+                    {
+                        pathWay.Add(floor);
+                    }
                     looking = false;
                     floor.GetParent(this, thisColor);
                     curTile = pathWay[pathWay.Count - 1];
