@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chest : MonoBehaviour
+public class Objectives : MonoBehaviour
 {
     public FloorData floor;
     public GameObject item;
+    public enum obj {chest, closet }
+    public obj objec;
     void Start()
     {
         
@@ -21,7 +23,7 @@ public class Chest : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            other.GetComponent<StateMachineLurker>().atChest = this;
+            other.GetComponent<StateMachineLurker>().objective = this;
         }
     }
 }

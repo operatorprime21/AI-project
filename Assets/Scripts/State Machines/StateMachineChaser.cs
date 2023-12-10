@@ -40,6 +40,10 @@ public class StateMachineChaser : StateMachineBase
         int r = Random.Range(0, opponentNoiseArea.Count);
         moveScript.end = opponentNoiseArea[r];
         moveScript.LookFrom();
+        if(state == State.lostChase)
+        {
+            state = State.patrol;
+        }
     }
 
     public IEnumerator RestartNewPath()
@@ -53,7 +57,6 @@ public class StateMachineChaser : StateMachineBase
                 SearchNoiseArea();
                 break;
             case State.lostChase:
-                //moveScript.EmptyData();
                 SearchNoiseArea();
                 break;
         }
@@ -69,12 +72,15 @@ public class StateMachineChaser : StateMachineBase
         switch (state)
         {
             case State.patrol:
+                noiseRange = 15;
                 moveScript.moveSpeed = 4f;
                 break;
             case State.lostChase:
+                noiseRange = 20;
                 moveScript.moveSpeed = 3.5f;
                 break;
             case State.chasing:
+                noiseRange = 20;
                 moveScript.moveSpeed = 6.1f;
                 StopAllCoroutines();
                 moveScript.EmptyData();

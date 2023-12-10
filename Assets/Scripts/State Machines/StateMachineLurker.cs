@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class StateMachineLurker : StateMachineBase
 {
-    public Chest atChest;
+    public Objectives objective;
     public List<GameObject> keys = new List<GameObject>();
     public List<string> objectives = new List<string>();
-    public enum State { searching, hiding, running }
+    public enum State { searching, hiding, running, inLocker }
     public State state;
     void Start()
     {
@@ -21,25 +21,29 @@ public class StateMachineLurker : StateMachineBase
     {
         if (state == State.searching)
         {
-            
-        }
-
-        if(base.DetectTarget()==true)
-        {
-            state = State.running;
-        }
-        else if(state == State.running)
-        {
-            if(opponent.stateMachine.opponentNoiseArea.Contains(moveScript.curTile))
+            if (opponent.stateMachine.opponentNoiseArea.Contains(moveScript.curTile))
             {
                 state = State.hiding;
             }
         }
 
-        if(state == State.hiding)
+        if(base.DetectTarget()==true && state == State.hiding)
         {
-
+            state = State.running;
         }
+        
+        if (base.DetectTarget() == false && state == State.inLocker)
+        {
+            if (opponent.stateMachine.opponentNoiseArea.Contains(moveScript.curTile))
+            {
+                state = State.hiding;
+            }
+        }
+
+        //if(state == State.hiding)
+        //{
+
+        //}
     }
 
     void FindRandomChest()
@@ -53,18 +57,56 @@ public class StateMachineLurker : StateMachineBase
 
             moveScript.LookFrom();
         }
+    }
 
+    void FindCloset()
+    {
+        List<float> dists = new List<float>();
+        foreach(FloorData closet in manager.closetPosition)
+        {
+            //float d = Vector3.Distance(this.transform.position, closet.pos.transform.position);
+            float hX = Mathf.Abs(closet.x - moveScript.curTile.x);
+            float hY = Mathf.Abs(closet.y - moveScript.curTile.y);
+            float hValue = Mathf.Sqrt(hX * hX + hY * hY);
+            closet.h[moveScript.id] = hValue;
+            dists.Add(hValue);
+        }
+        for (int i = 0; i <= dists.Count; i++)
+        {
+            if (dists.Count > 1)
+            {
+                if (dists[i] < dists[i + 1])
+                {
+                    dists.RemoveAt(i + 1);
+                    i--; 
+                }
+                else
+                {
+                    dists.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+        foreach(FloorData closet in manager.closetPosition)
+        {
+            if(dists[0] == closet.h[moveScript.id])
+            {
+                moveScript.end = closet;
+                break;
+            }
+        }
+        moveScript.LookFrom();
     }
 
     void SearchChest()
     {
-        if (atChest.item != null)
+        if (objective.item != null)
         {
-            keys.Add(atChest.item);
-            atChest.item = null;
+            keys.Add(objective.item);
+            objective.item = null;
             objectives.Remove("find key");
         }
-        atChest = null;
+        objective = null;
         //atChest.gameObject.SetActive(false);
     }
 
@@ -79,7 +121,7 @@ public class StateMachineLurker : StateMachineBase
             case State.searching:
                 if (objectives[0] == "find key")
                 {
-                    if (atChest != null)
+                    if (objective != null)
                     {
                         SearchChest();
                     }
@@ -109,23 +151,23 @@ public class StateMachineLurker : StateMachineBase
         switch (state)
         {
             case State.searching:
-                {
-                    noiseRange = 10;
-                    moveScript.moveSpeed = 4f;
-                }
-                break;
+                 noiseRange = 10;
+                 moveScript.moveSpeed = 4f;
+                 break;
             case State.hiding:
-                {
-                    noiseRange = 20;
-                    moveScript.moveSpeed = 2.5f;
-                }
-                break;
+                 base.ResetPath(true);
+                 StopAllCoroutines();
+                 moveScript.EmptyData();
+                 noiseRange = 20;
+                 moveScript.moveSpeed = 2.5f;
+                 break;
             case State.running:
-                {
-                    noiseRange = 2;
-                    moveScript.moveSpeed = 6f;
-                }
-                break;
+                 base.ResetPath(true);
+                 StopAllCoroutines();
+                 moveScript.EmptyData();
+                 noiseRange = 2;
+                 moveScript.moveSpeed = 6f;
+                 break;
         }
         opponent.stateMachine.opponentNoiseArea = base.NoiseArea(noiseRange);
     }

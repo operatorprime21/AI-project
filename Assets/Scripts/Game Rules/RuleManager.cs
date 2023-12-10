@@ -15,12 +15,17 @@ public class RuleManager : MonoBehaviour
 
     public List<GameObject> chests = new List<GameObject>();
     public List<FloorData> chestPosition = new List<FloorData>();
+    public List<FloorData> closetPosition = new List<FloorData>();
     void Start()
     {
         FindChests();
         foreach (GameObject chest in GameObject.FindGameObjectsWithTag("Chest"))
         {
-            chestPosition.Add(chest.GetComponent<Chest>().floor);
+            chestPosition.Add(chest.GetComponent<Objectives>().floor);
+        }
+        foreach (GameObject closet in GameObject.FindGameObjectsWithTag("Closet"))
+        {
+            closetPosition.Add(closet.GetComponent<Objectives>().floor);
         }
         RandomizeItem();
     }
@@ -49,19 +54,19 @@ public class RuleManager : MonoBehaviour
             if(i == 0)
             {
                 GameObject chest1 = chests[r];
-                chest1.GetComponent<Chest>().item = keyR;
+                chest1.GetComponent<Objectives>().item = keyR;
                 chests.Remove(chest1);
             }
             if (i == 1)
             {
                 GameObject chest2 = chests[r];
-                chest2.GetComponent<Chest>().item = keyG;
+                chest2.GetComponent<Objectives>().item = keyG;
                 chests.Remove(chest2);
             }
             if (i == 2)
             {
                 GameObject chest3 = chests[r];
-                chest3.GetComponent<Chest>().item = keyB;
+                chest3.GetComponent<Objectives>().item = keyB;
             }
         }
         chests = FindChests();
