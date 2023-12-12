@@ -33,7 +33,6 @@ public class FloorData : MonoBehaviour
     {
         float newX = x;
         float newY = y;
-        int c = 0;
         List<FloorData> nextFloors = new List<FloorData>();
         for (int x = -range; x <= range; x++)
         {
@@ -50,7 +49,6 @@ public class FloorData : MonoBehaviour
                         if (nextData.Type != FloorData.type.notWalkable)
                         {
                             nextFloors.Add(floor.GetComponent<FloorData>());
-                            c++;
                         }
                     }
                 }

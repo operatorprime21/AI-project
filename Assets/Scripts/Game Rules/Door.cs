@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class Door : MonoBehaviour
 {
     public bool unlocked;
@@ -30,7 +30,7 @@ public class Door : MonoBehaviour
         for(int i = 0; i <= 2; i++)
         {
             keys.Add(playerkey[i]);
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(1f);
             DisableLockMesh(playerkey[i]);
         }
         yield return new WaitForSeconds(1f);
@@ -38,6 +38,7 @@ public class Door : MonoBehaviour
         {
             doorData.Type = FloorData.type.walkable;
             doorMesh.SetActive(false);
+            SceneManager.LoadScene(2);
         }
         unlocking = false;
     }

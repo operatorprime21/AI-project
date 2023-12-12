@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StateMachineLurker : StateMachineBase
 {
     public Objectives objective;
     public List<GameObject> keys = new List<GameObject>();
     public List<string> objectives = new List<string>();
+    public int hp = 3;
+    bool canDamage = true;
     public enum State { searching, hiding, running, inLocker }
     public State state;
     void Start()
@@ -19,31 +22,103 @@ public class StateMachineLurker : StateMachineBase
     // Update is called once per frame
     void Update()
     {
-        if (state == State.searching)
+        
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Chaser" && canDamage == true)
         {
-            if (opponent.stateMachine.opponentNoiseArea.Contains(moveScript.curTile))
-            {
-                state = State.hiding;
-            }
+            hp--;
+            canDamage = false;
+            StartCoroutine(DamageCD());
         }
-
-        if(base.DetectTarget()==true && state == State.hiding)
+        if(hp<=0)
         {
-            state = State.running;
+            SceneManager.LoadScene(1);
+        }
+    }
+    IEnumerator DamageCD()
+    {
+        yield return new WaitForSeconds(3f);
+        canDamage = true;
+    }
+    private void StateSwitch()
+    {
+        switch (state)
+        {
+            case State.searching:
+                if (base.HearTarget())
+                {
+                    state = State.hiding;
+                    moveScript.canMove = true;
+                }
+                else
+                {
+                    state = State.searching;
+                    moveScript.canMove = true;
+                }
+                break;
+            case State.hiding:
+                if (base.DetectTarget())
+                {
+                    state = State.running;
+                    moveScript.canMove = true;
+                    StopAllCoroutines();
+                }
+                else
+                {
+                    if (base.HearTarget())
+                    {
+                        state = State.hiding;
+                    }
+                    else state = State.searching;
+                }
+                break;
+
+            case State.running:
+                {
+                    if (objective != null)
+                    {
+                        if (objective.GetComponent<Collider>().tag == "Closet")
+                        {
+                            state = State.inLocker;
+                            StartCoroutine(HideTime());
+                        }
+                    }
+                }
+                break;
+
+            case State.inLocker:
+                if (base.DetectTarget() == false)
+                {
+                    if (base.HearTarget())
+                    {
+                        state = State.inLocker;
+                    }
+                    else state = State.hiding;
+                }
+                break;
+        }
+    }
+
+    IEnumerator HideTime()
+    {
+        yield return new WaitForSeconds(1.5f);
+        if (base.HearTarget())
+        {
+            state = State.inLocker;
+            StartCoroutine(HideTime());
+        }
+        else
+        {
+            state = State.hiding;
+            base.ResetPath(false);
+            ObjectiveSearch();
+            moveScript.LookFrom();
+            moveScript.canMove = true; 
+
         }
         
-        if (base.DetectTarget() == false && state == State.inLocker)
-        {
-            if (opponent.stateMachine.opponentNoiseArea.Contains(moveScript.curTile))
-            {
-                state = State.hiding;
-            }
-        }
-
-        //if(state == State.hiding)
-        //{
-
-        //}
     }
 
     void FindRandomChest()
@@ -54,9 +129,10 @@ public class StateMachineLurker : StateMachineBase
             FloorData chosenChest = manager.chestPosition[r];
             moveScript.end = chosenChest;
             manager.chestPosition.Remove(chosenChest);
-
             moveScript.LookFrom();
+            moveScript.canMove = true;
         }
+
     }
 
     void FindCloset()
@@ -107,43 +183,58 @@ public class StateMachineLurker : StateMachineBase
             objectives.Remove("find key");
         }
         objective = null;
-        //atChest.gameObject.SetActive(false);
     }
 
     public IEnumerator RestartNewPath()
     {
         base.ResetPath(false);
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1.5f);
 
         switch (state)
         {
             case State.searching:
-                if (objectives[0] == "find key")
-                {
-                    if (objective != null)
-                    {
-                        SearchChest();
-                    }
-                    FindRandomChest();
-                }
-                else if (objectives[0] == "unlock door")
-                {
-                    moveScript.end = manager.GetDoorstep();
-                    moveScript.LookFrom();
-                    if (this.transform.position == manager.GetDoorstep().pos.position && !manager.door.GetComponent<Door>().unlocking)
-                    {
-                        moveScript.enabled = false;
-                        manager.door.GetComponent<Door>().UseKey(keys);
-                    }
-                }
+                ObjectiveSearch();
+                break;
+            case State.hiding:
+                ObjectiveSearch();
+                break;
+            case State.running:
                 break;
         }
 
     }
 
+    private void ObjectiveSearch()
+    {
+        if (objectives[0] == "find key")
+        {
+            if (objective != null)
+            {
+                if(objective.GetComponent<Collider>().tag == "Chest")
+                {
+                    SearchChest();
+                }
+            }
+            FindRandomChest();
+        }
+        if (objectives[0] == "unlock door")
+        {
+            if (this.transform.position == manager.GetDoorstep().pos.position && !manager.door.GetComponent<Door>().unlocking)
+            {
+                moveScript.enabled = false;
+                manager.door.GetComponent<Door>().UseKey(keys);
+                opponent.stateMachine.sightRange = 100f;
+            }
+            moveScript.end = manager.GetDoorstep();
+            moveScript.LookFrom();
+            moveScript.canMove = true;
+        }
+    }
+
     public override void StepEvent()
     {
+        StateSwitch();
         if (base.ReachedEnd() == true)
         {
             StartCoroutine(RestartNewPath());
@@ -151,24 +242,26 @@ public class StateMachineLurker : StateMachineBase
         switch (state)
         {
             case State.searching:
-                 noiseRange = 10;
+                 noiseRange = 20;
                  moveScript.moveSpeed = 4f;
                  break;
             case State.hiding:
-                 base.ResetPath(true);
-                 StopAllCoroutines();
-                 moveScript.EmptyData();
                  noiseRange = 20;
                  moveScript.moveSpeed = 2.5f;
                  break;
             case State.running:
-                 base.ResetPath(true);
                  StopAllCoroutines();
                  moveScript.EmptyData();
-                 noiseRange = 2;
+                 base.ResetPath(true);
+                 FindCloset();
+                 noiseRange = 10;
                  moveScript.moveSpeed = 6f;
                  break;
+            case State.inLocker:
+                noiseRange = 10;
+                moveScript.moveSpeed = 2.5f;
+                break;
         }
-        opponent.stateMachine.opponentNoiseArea = base.NoiseArea(noiseRange);
+        opponent.stateMachine.opponentNoiseArea = base.HearTarget(noiseRange);
     }
 }

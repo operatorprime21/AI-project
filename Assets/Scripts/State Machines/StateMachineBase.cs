@@ -77,10 +77,22 @@ public abstract class StateMachineBase : MonoBehaviour
         else return false;
     }
 
-    public List<FloorData> NoiseArea(int range)
+    public List<FloorData> HearTarget(int range)
     {
         List<FloorData> area = new List<FloorData>();
         area = moveScript.curTile.GetSurroundingFloor(range);
+        area.Add(moveScript.curTile);
         return area;
+    }
+
+    public bool HearTarget()
+    {
+        float distToTarget = Vector3.Distance(transform.position, opponent.transform.position);
+        if (distToTarget < sightRange)
+        {
+            
+            return true;
+        }
+        else return false;
     }
 }

@@ -21,6 +21,11 @@ public class StateMachineChaser : StateMachineBase
     // Update is called once per frame
     void Update()
     {
+        
+    }
+
+    private void SwitchState()
+    {
         if (base.DetectTarget() == true)
         {
             state = State.chasing;
@@ -29,7 +34,6 @@ public class StateMachineChaser : StateMachineBase
         {
             if (state == State.chasing)
             {
-                //moveScript.end = moveScript.nextTile;
                 state = State.lostChase;
             }
         }
@@ -65,6 +69,7 @@ public class StateMachineChaser : StateMachineBase
 
     public override void StepEvent()
     {
+        SwitchState();
         if (base.ReachedEnd() == true)
         {
             StartCoroutine(RestartNewPath());
@@ -72,15 +77,15 @@ public class StateMachineChaser : StateMachineBase
         switch (state)
         {
             case State.patrol:
-                noiseRange = 15;
+                noiseRange = 3;
                 moveScript.moveSpeed = 4f;
                 break;
             case State.lostChase:
-                noiseRange = 20;
+                noiseRange = 3;
                 moveScript.moveSpeed = 3.5f;
                 break;
             case State.chasing:
-                noiseRange = 20;
+                noiseRange = 6;
                 moveScript.moveSpeed = 6.1f;
                 StopAllCoroutines();
                 moveScript.EmptyData();
@@ -89,6 +94,6 @@ public class StateMachineChaser : StateMachineBase
                 moveScript.LookFrom();
                 break;
         }
-        opponent.stateMachine.opponentNoiseArea = base.NoiseArea(noiseRange);
+        opponent.stateMachine.opponentNoiseArea = base.HearTarget(noiseRange);
     }
 }
